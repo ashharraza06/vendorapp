@@ -1,0 +1,67 @@
+/* Enter your custom styles here */
+.myHeaderText {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+#container-vendrcmplain---App--subbtn-inner,#application-vednorinfor-Display-component---App--subbtn-inner
+{
+    color: white;
+    background-color: mediumseagreen;
+    filter: drop-shadow(2px 4px 6px black);
+}
+#container-vendrcmplain---App--cnlbtn-inner,#application-vednorinfor-Display-component---App--cnlbtn-inner
+{
+    color: white;
+    background-color: orangered;
+    filter: drop-shadow(2px 4px 6px black);
+}
+.errorState {
+    border: 2px solid red; /* Example: Red border to indicate an error */
+}
+.revHbox
+{
+    gap : 100px;
+    align-items: center;
+}
+.compVbox
+{
+    gap:10px;
+    font-size: 16px;
+}
+.revpage,.vwpage
+{
+    margin: 5px;
+    margin-left: 30px;
+    gap: 5px;
+}
+.vencode
+{
+    font-weight: bold;
+}
+.myCustomDialogClass
+{
+    text-align: center;
+}
+.attachvbox
+{
+    height: 250px;
+    overflow: scroll;
+}
+#container-vendrcmplain---App--revbtn-inner,#application-vednorinfor-Display-component---App--revbtn-inner
+{
+    /* background-image: none; */
+    background-color: #0070f2;
+    /* border-color: #0070f2; */
+    color: #fff;
+    /* text-shadow: 0 0 0.125rem transparent; */
+    filter: drop-shadow(2px 4px 6px black);
+}
+#container-vendrcmplain---App--bckbtn-inner
+{
+    /* background-image: none; */
+    background-color: #0070f2;
+    /* border-color: #0070f2; */
+    color: #fff;
+    /* text-shadow: 0 0 0.125rem transparent; */
+    filter: drop-shadow(2px 4px 6px black);
+}
