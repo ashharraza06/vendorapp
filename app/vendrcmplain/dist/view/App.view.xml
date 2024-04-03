@@ -184,7 +184,7 @@
 													<VBox id ="revsec1">
 														<!-- <Text text="Selected Pan Details:" class="sapMTitle sapMTitleStyleH3 myHeaderText"/> -->
 														<HBox id = "rev1hbox" class ="revHbox">
-															<Table width="1200px" id="revpanTable" inset="false" items="{
+															<Table id="revpanTable" inset="false" items="{
 										path: '/vendor'
 							}">
 																<columns>
@@ -219,7 +219,7 @@
 													<VBox id = "revsec2">
 														<!-- <Text text="Selected PO Details:" class="sapMTitle sapMTitleStyleH3 myHeaderText"/> -->
 														<HBox id = "rev2hbox" class = "revHbox">
-															<Table width="1200px" id="revPoTable" inset="false" items="{
+															<Table id="revPoTable" inset="false" items="{
 								path: '/poheader'
 									}" selectionChange="porowchange">
 																<columns>
@@ -399,7 +399,7 @@
 											<VBox id= "vv" class = "commentvbox">
 											<Button id="comm" class = "commentbtn"  text="Comments" press="comments" icon="sap-icon://comment"  />
 											<HBox id= "hh">
-											<TextArea id="ta" rows="8" width="90vw" class="commenthbox" />
+											<TextArea id="ta" rows="8" width="90vw" value="Demo Comments" editable="false" class="commenthbox" />
 											</HBox>
 											</VBox>
 
