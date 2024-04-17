@@ -17,6 +17,7 @@ entity poheader {
     key pono      : String;
         vendor    : String;
         pannum    : String;
+        type      : String;
         amount    : String;
         potoven   : Association to one vendorinfo
                         on potoven.vencode = vendor;
@@ -32,14 +33,16 @@ entity complaint : managed {
         cstatus         : String @Common.FilterDefaultValue: 'Submitted';
         ccomplain_about : String;
         cdesc           : String;
-        days            : String;
+        days            : Integer;
+        wid             : String;
         comptopo        : Association to one poheader
                               on comptopo.pono = cpono;
         comptofile      : Composition of many files
                               on comptofile.complaintno = complainno;
         comptocomm      : Composition of many comments
                               on comptocomm.complainno = complainno;
-// comptoworkflow  : Composition of many workflowhisotry on comptoworkflow.complainno = complainno;
+        comptoworkflow  : Composition of many workflowhisotry
+                              on comptoworkflow.complainno = complainno;
 
 }
 
@@ -59,34 +62,42 @@ entity files : cuid, managed {
 
 entity comments : managed {
     key idd        : UUID;
-    key complainno : String;
+        complainno : String;
         comments   : String;
         commtocomp : Association to one complaint
                          on commtocomp.complainno = complainno;
 }
 
-entity approvers
-{
-    key id : UUID;
-    name : String;
+entity approvers {
+    key keyy : String;
+    key name : String;
 }
-
-// @cds.persistance.exists
-// entity workflowhisotry {
-//    key idd : String;
-//    key complainno: String;
-//      Employee_ID : String;
-//    level : String;
-//   Approved_by: String;
-//   Employee_Name : String;
-//     Title : String;
-
-
-//     Notification_Status : String;
-//     Result : String;
-//     Begin_DateAND_Time: String;
-//     End_DateAND_Time: String;
-//     Days_Taken : String;
-//     Remarks : String;
-//     workflowhistorytocomp :  Association to one complaint on workflowhistorytocomp.complainno = complainno;
-// }
+entity workitems{
+    key wid : String;
+    key name : String;
+}
+entity levels{
+    
+   key level : String;
+   key employeid : String;
+   complainttype : String;
+    
+}
+entity workflowhisotry {
+    key idd                   : UUID;
+        complainno            : String;
+        complainttype         : String;
+        Employee_ID           : String;
+        level                 : String;
+        Approved_by           : String;
+        Employee_Name         : String;
+        Title                 : String;
+        Notification_Status   : String;
+        Result                : String;
+        Begin_DateAND_Time    : String;
+        End_DateAND_Time      : String;
+        Days_Taken            : String;
+        Remarks               : String;
+        workflowhistorytocomp : Association to one complaint
+                                    on workflowhistorytocomp.complainno = complainno;
+}

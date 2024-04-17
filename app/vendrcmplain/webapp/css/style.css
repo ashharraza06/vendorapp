@@ -23,10 +23,10 @@
     gap : 100px;
     align-items: center;
 }
-.compVbox
+.compVbox,.customVbox
 {
     gap:10px;
-    font-size: 16px;
+    font-size: 12px;
 }
 .revpage,.vwpage
 {
@@ -40,13 +40,19 @@
 }
 .myCustomDialogClass
 {
-    text-align: center;
+    text-align: left;
 }
-.attachvbox
+.attachvbox,.attachvbox1
 {
     height: 250px;
     overflow: scroll;
 }
+.commentbtn
+{
+    align-items: end;
+    justify-content: end;
+}
+
 #container-vendrcmplain---App--revbtn-inner,#application-vednorinfor-Display-component---App--revbtn-inner
 {
     /* background-image: none; */
@@ -56,7 +62,7 @@
     /* text-shadow: 0 0 0.125rem transparent; */
     filter: drop-shadow(2px 4px 6px black);
 }
-#container-vendrcmplain---App--bckbtn-inner
+#container-vendrcmplain---App--bckbtn-inner,#container-vendrcmplain---App--withoutPo-inner,#application-vednorinfor-Display-component---App--bckbtn-inner
 {
     /* background-image: none; */
     background-color: #0070f2;
@@ -64,4 +70,20 @@
     color: #fff;
     /* text-shadow: 0 0 0.125rem transparent; */
     filter: drop-shadow(2px 4px 6px black);
+}
+.wizstep
+{
+    max-height: 80vh;
+    height: 80vh;
+}
+.comptable
+{
+    height: 180px;
+    overflow: scroll;
+}
+.withoutPObtn
+{
+    width: 100%;
+    align-items: end;
+    padding-bottom: 10px;
 }

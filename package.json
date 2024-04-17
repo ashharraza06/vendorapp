@@ -10,13 +10,14 @@
         "@sap/cds-hana": "^2",
         "@sap/xsenv": "^5.0.0",
         "@sap/xssec": "^3.6.1",
+        "axios": "^1.6.8",
         "express": "^4",
         "passport": "^0.7.0"
     },
     "devDependencies": {
         "@cap-js/sqlite": "^1",
         "@sap/cds-dk": "^7",
-        "@sap/ux-specification": "^1.120.6",
+        "@sap/ux-specification": "^1.120.8",
         "rimraf": "^3.0.2"
     },
     "scripts": {
@@ -25,7 +26,8 @@
         "undeploy": "cf undeploy vendorapp --delete-services --delete-service-keys --delete-service-brokers",
         "build": "rimraf resources mta_archives && mbt build --mtar archive",
         "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
-        "watch-compnav": "cds watch --open compnav/webapp/index.html?sap-ui-xx-viewCache=false"
+        "watch-compnav": "cds watch --open compnav/webapp/index.html?sap-ui-xx-viewCache=false",
+        "watch-polist": "cds watch --open polist/webapp/index.html?sap-ui-xx-viewCache=false"
     },
     "cds": {
         "requires": {
@@ -34,6 +36,7 @@
         }
     },
     "sapux": [
-        "app/compnav"
+        "app/compnav",
+        "app/polist"
     ]
 }

@@ -3,7 +3,7 @@
     </App>
 </mvc:View> -->
 
-<mvc:View controllerName="vendrcmplain.controller.App"
+<mvc:View xmlns:filterbar="sap.ui.comp.filterbar" controllerName="vendrcmplain.controller.App"
 	xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
 	xmlns="sap.m"
 	xmlns:u ="sap.uxap"
@@ -13,44 +13,31 @@
 		<pages>
 			<Page id="wizardContentPage" showHeader="false">
 				<content>
-					<Wizard id="VendorComplain" class="height1" renderMode="Page" navigationChange= "change">
-						<WizardStep id="PanStep" title="PAN Details" validated="false" activate="StepOne">
-
-							<Table id="panTable" inset="false" mode="SingleSelect" items="{
-										path: '/vendor'
-							}" selectionChange="panrowchange">
-								<columns >
-
-									<Column width="200px">
-										<Text text="PAN Number" />
-									</Column>
-									<Column minScreenWidth="Tablet" demandPopin="true">
-										<Text text="Vendor Code" />
-									</Column>
-								</columns>
-								<items>
-									<ColumnListItem vAlign="Middle">
-										<cells >
-											<Text text="{panno}"></Text>
-											<Text id = "vc" text="{vencode}"></Text>
-										</cells>
-									</ColumnListItem>
-								</items>
-							</Table>
-							<!-- <Text id="t1" class="sapUiSmallMarginBottom" text="Sedtum, mi et tristique ullamcorper, sapien sapien faucibus sem, quis pretium nibh lorem malesuada diam. Nulla quis arcu aliquet, feugiat massa semper, volutpat diam. Nam vitae ante posuere, molestie neque sit amet, dapibus velit. Maecenas eleifend tempor lorem. Mauris vitae elementum mi, sed eleifend ligula. Nulla tempor vulputate dolor, nec dignissim quam convallis ut. Praesent vitae commodo felis, ut iaculis felis. Fusce quis eleifend sapien, eget facilisis nibh. Suspendisse est velit, scelerisque ut commodo eget, dignissim quis metus. Cras faucibus consequat gravida. Curabitur vitae quam felis. Phasellus ac leo eleifend, commodo tortor et, varius quam. Aliquam erat volutpat"/> -->
-						</WizardStep>
-						<WizardStep id="PoStep" validated="false" title="PO Details" activate="StepTwo">
+					<Wizard id="VendorComplain"  class="height1" renderMode="Page" navigationChange= "change">
+						<WizardStep id="PoStep" nextStep="ComplainCreationStep" validated="false" title="PO Details" activate="StepTwo" class="wizstep">
+							<HBox class = "withoutPObtn" justifyContent="End">
+							 <Button id="withoutPo" class = "withoutPO" text="Create" press="withoutpo" />
+							</HBox>
+							
 							<Table id="idProductsTable" inset="false" mode="SingleSelect" items="{
 								path: '/poheader'
 
 									}" selectionChange="porowchange">
+									<headerToolbar>
+									<Toolbar >
+									<SearchField id="SearchField" width="30vw" enabled="true" search="handleSearch" />
+									</Toolbar>
+									</headerToolbar>
 
 								<columns>
-									<Column width="200px">
-										<Text text="PO Number" />
+									<Column id= "p" width="200px">
+										<Text text="PO No/Invoice No" />
+									</Column>
+									<Column id= "v" demandPopin="true">
+										<Text text="Vendor Code" />
 									</Column>
 									<Column demandPopin="true">
-										<Text text="Vendor Code" />
+										<Text text="Type" />
 									</Column>
 									<Column demandPopin="true">
 										<Text text="Amount" />
@@ -61,21 +48,22 @@
 										<cells>
 											<Text text="{pono}"></Text>
 											<Text text="{vendor}"></Text>
+											<Text text="{type}"></Text>
 											<Text text="{amount}"></Text>
 										</cells>
 									</ColumnListItem>
 								</items>
 							</Table>
 						</WizardStep>
-						<WizardStep id="ComplainCreationStep" validated="false" activate="StepThree" title="Complaints">
-							<u:ObjectPageLayout id="Object3stepPage" upperCaseAnchorBar="false" flexEnabled="true" height="600px" showFooter="true">
+						<WizardStep id="ComplainCreationStep" nextStep="ReviewStep" validated="false" activate="StepThree" title="Complaints" class="wizstep">
+							<u:ObjectPageLayout id="Object3stepPage" upperCaseAnchorBar="false" flexEnabled="true" height="100%" showFooter="true">
 								<u:sections>
 									<u:ObjectPageSection titleUppercase="false" title="Complaint Table">
 										<u:subSections>
 											<u:ObjectPageSubSection titleUppercase="false">
 												<u:blocks>
 
-													<Table id="complainTable" inset="false" items="{
+													<Table class="comptable" id="complainTable" inset="false" items="{
 														path: '/complains'
 															}">
 														<columns>
@@ -107,28 +95,38 @@
 											</u:ObjectPageSubSection>
 										</u:subSections>
 									</u:ObjectPageSection>
-									<u:ObjectPageSection titleUppercase="false" title="Raise a Complaint">
+									<u:ObjectPageSection titleUppercase="false" title="Complaint Details">
 										<u:subSections>
 											<u:ObjectPageSubSection>
 												<u:blocks>
 													<!-- <Text text="Raise a Complaint" class="sapMTitle sapMTitleStyleH3 myHeaderText"/> -->
-													<VBox id = "mainvbox" class = "customVbox">
-														<Label id= "sv" text="Selected Vendor Code:"/>
-														<Text id="vencode"  class = "vencode" text="Value" />
-														<Label id= "sp" text="Selected PO Number is:"/>
-														<Text id="pono" class = "vencode" text="Value"/>
-														<Label id= "ci" text="Complaint is about:"/>
-														<Select selectedKey="complintype" id="ordr" change="textchange">
-															<core:Item key = "delay" id= "dp" text="Delay in Payment"/>
-															<core:Item key = "wrong" id= "wp" text="Wrong Payment"/>
-															<core:Item key = "tds" id= "tdsi" text="TDS issue"/>
-															<core:Item key = "gst" id= "gsti" text="GST issue"/>
-															<core:Item key = "othrs" id= "others" text="Others"/>
-														</Select>
-														<Label id = "desccomp" text="Describe your Complaint:"/>
-														<TextArea id = "textcomp" width = "100%" height = "130px" valueState="{/complnabt}" liveChange="textchange"/>
-
-														<!-- <Button core:require="{ handler: 'project1/ext/fragment/Complaint'}" text="Complaint" press="handler.onPress" /> -->
+													<VBox id = "mainvbox" class = "customVbox" width="100%">
+														<HBox id = "hcomp" width="100%">
+															<VBox width="50%">
+																<Label id= "sv" text="Selected Vendor Code:"/>
+																<Text id="vencode"  class = "vencode" text="Value" />
+															</VBox>
+															<VBox width="50%" id="selPObox">
+																<Label id= "sp" text="Selected PO Number is:"/>
+																<Text id="pono" class = "vencode" text="Value"/>
+															</VBox>
+														</HBox>
+														<HBox width="100%">
+															<VBox width="100%">
+																<Label required="true" id= "ci" text="Complaint is about:"/>
+																<Select selectedKey="complintype" id="ordr" change="textchange">
+																	<core:Item key = "delay" id= "dp" text="Delay in Payment"/>
+																	<core:Item key = "wrong" id= "wp" text="Wrong Payment"/>
+																	<core:Item key = "tds" id= "tdsi" text="TDS issue"/>
+																	<core:Item key = "gst" id= "gsti" text="GST issue"/>
+																	<core:Item key = "othrs" id= "others" text="Others"/>
+																</Select>
+															</VBox>
+														</HBox>
+														<VBox width="100%">
+															<Label required="true" id = "desccomp" text="Describe your Complaint:"/>
+															<TextArea id="textcomp" width="100%" height="130px" valueState="Error" valueStateText="Value is required" required="true" liveChange="textchange"/>
+														</VBox>
 													</VBox>
 												</u:blocks>
 											</u:ObjectPageSubSection>
@@ -142,7 +140,7 @@
 													<!-- <Text text="Attachments" class="sapMTitle sapMTitleStyleH3 myHeaderText"/> -->
 													<VBox id= "11" class = "attachvbox">
 
-														<upload:UploadSet id="uploadSet" instantUpload="false" uploadEnabled="true" mode="None" afterItemAdded="handler.onAfterItemAdded" uploadCompleted="handler.onUploadCompleted" items="{
+														<upload:UploadSet id="uploadSet" instantUpload="false" uploadEnabled="true" mode="None" afterItemAdded="onAfterItemAdded" uploadCompleted="onUploadCompleted" items="{
 								path: '/files',
 								parameters: {
 									$orderby: 'createdAt desc'
@@ -152,9 +150,9 @@
 															</upload:toolbar>
 															<upload:items>
 																<upload:UploadSetItem id="ddd" fileName="{fileName}" mediaType="{mediaType}" url="{url}" thumbnailUrl="{
-								path: 'mediaType',
-								formatter: 'handler.formatThumbnailUrl'
-									}" enabledEdit="false" openPressed="handler.onOpenPressed" removePressed="handler.onRemovePressed">
+								path: '/mediaType',
+								formatter: 'formatThumbnailUrl'
+									}" enabledEdit="false" openPressed="onOpenPressed" removePressed="onRemovePressed">
 																	<upload:attributes>
 																		<ObjectAttribute id="dd" title="Uploaded By" text="{createdBy}" active="false" />
 																		<ObjectAttribute id="dd22" title="Uploaded on" text="{createdAt}" active="false" />
@@ -174,8 +172,8 @@
 							<!-- <Text id="ddd3" text="Integer pellentesque leo sit amet dui vehicula, quis ullamcorper est pulvinar. Nam in libero sem. Suspendisse arcu metus, molestie a turpis a, molestie aliquet dui. Donec ppellentesque leo sit amet dui vehicula, quis ullamcorper est pulvinar. Nam in libero sem. Suspendisse arcu metus, molestie a turpis a, molestie aliquet dui. Donec pulvinar, sapien	corper eu, posuere malesuada nisl. Integer pellentesque leo sit amet dui vehicula, quis ullamcorper est pulvinar. Nam in libero sem. Suspendisse arcu metus, molestie a turpis a, molestie aliquet dui. Donec pulvinar, sapien	" /> -->
 						</WizardStep>
 						<!-- <WizardStep id="custObejct"></WizardStep> -->
-						<WizardStep id="ReviewStep" activate="StepFour" complete="pricingComplete" validated="false" title="Preview">
-							<u:ObjectPageLayout id="Object4stepPage" upperCaseAnchorBar="false" flexEnabled="true" height="600px" showFooter="true">
+						<WizardStep class="wizstep" id="ReviewStep" activate="StepFour" complete="pricingComplete" validated="false" title="Preview">
+							<u:ObjectPageLayout id="Object4stepPage" upperCaseAnchorBar="false" flexEnabled="true" height="100%" showFooter="true">
 								<u:sections>
 									<u:ObjectPageSection titleUppercase="false" title="PAN Details">
 										<u:subSections>
@@ -293,7 +291,7 @@
 											<u:ObjectPageSubSection>
 												<u:blocks>
 													<VBox id="112" class="attachvbox">
-														<upload:UploadSet id="uploadSet1" instantUpload="false" uploadEnabled="false" uploadButtonInvisible= "true" showIcons="true" mode="None" afterItemAdded="handler.onAfterItemAdded" uploadCompleted="handler.onUploadCompleted" items="{
+														<upload:UploadSet id="uploadSet1" instantUpload="false" uploadEnabled="false" uploadButtonInvisible= "true" showIcons="true" mode="None" afterItemAdded="onAfterItemAdded" uploadCompleted="onUploadCompleted" items="{
                         path: '/files',
                         parameters: {
                             $orderby: 'createdAt desc'
@@ -303,9 +301,9 @@
 															</upload:toolbar>
 															<upload:items>
 																<upload:UploadSetItem id="ddd1" fileName="{fileName}" mediaType="{mediaType}" url="{url}" thumbnailUrl="{
-                                path: 'mediaType',
-                                formatter: 'handler.formatThumbnailUrl'
-                            }" enabledEdit="false" enabledRemove="false" visibleEdit= "false" visibleRemove="false" openPressed="handler.onOpenPressed" removePressed="handler.onRemovePressed">
+                                path: '/mediaType',
+                                formatter: 'formatThumbnailUrl'
+                            }" enabledEdit="false" enabledRemove="false" visibleEdit= "false" visibleRemove="false" openPressed="onOpenPressed" removePressed="onRemovePressed">
 																	<upload:attributes>
 																		<ObjectAttribute id="dd1" title="Uploaded By" text="{createdBy}" active="false" />
 																		<ObjectAttribute id="dd221" title="Uploaded on" text="{createdAt}" active="false" />
@@ -342,7 +340,7 @@
 			<Page id="wizardReviewPage" showHeader="false">
 				<content>
 					<!-- <VBox id="vwpg" class="vwpage"> -->
-					<u:ObjectPageLayout id="ObjectViewPage" upperCaseAnchorBar="false" flexEnabled="true" height="600px" showFooter="true">
+					<u:ObjectPageLayout id="ObjectViewPage" upperCaseAnchorBar="false" flexEnabled="true" height="100%" showFooter="true">
 						<u:sections>
 							<u:ObjectPageSection titleUppercase="false" title="View Complaint">
 								<u:subSections>
@@ -395,12 +393,13 @@
 								<u:subSections>
 									<u:ObjectPageSubSection>
 										<u:blocks>
-										<!-- Comments code will be here -->
-											<VBox id= "vv" class = "commentvbox">
-											<Button id="comm" class = "commentbtn"  text="Comments" press="comments" icon="sap-icon://comment"  />
-											<HBox id= "hh">
-											<TextArea id="ta" rows="8" width="90vw" value="Demo Comments" editable="false" class="commenthbox" />
-											</HBox>
+											<!-- Comments code will be here -->
+											<VBox id= "vv" class = "commentvbox" width="100%">
+												<HBox id="buttonContainer" alignItems="End" justifyContent="End" width="100%">
+													<Button id="comm" class = "commentbtn" text="Comments" press="comments" icon="sap-icon://comment" />
+												</HBox>
+												<TextArea id="ta" rows="8" width="100%" value="Demo Comments" editable="false" class="commenthbox" />
+
 											</VBox>
 
 										</u:blocks>
@@ -413,7 +412,7 @@
 										<u:blocks>
 											<!-- <Text id="attachmentsvw" text="Attachments" class="sapMTitle sapMTitleStyleH3 myHeaderText"/> -->
 											<VBox id="112vw" class="attachvbox1">
-												<upload:UploadSet id="uploadSet1vw" instantUpload="false" uploadButtonInvisible="true" uploadEnabled="false" showIcons="true" mode="None" afterItemAdded="handler.onAfterItemAdded" uploadCompleted="handler.onUploadCompleted" items="{
+												<upload:UploadSet id="uploadSet1vw" instantUpload="false" uploadButtonInvisible="true" uploadEnabled="false" showIcons="true" mode="None" afterItemAdded="onAfterItemAdded" uploadCompleted="onUploadCompleted" items="{
                                         path: '/files',
                                         parameters: {
                                             $orderby: 'createdAt desc'
@@ -423,9 +422,9 @@
 													</upload:toolbar>
 													<upload:items>
 														<upload:UploadSetItem id="ddd1vw" enabledRemove="false" visibleEdit="false" visibleRemove="false" fileName="{fileName}" mediaType="{mediaType}" url="{url}" thumbnailUrl="{
-                                                path: 'mediaType',
-                                                formatter: 'handler.formatThumbnailUrl'
-                                            }" enabledEdit="false" openPressed="handler.onOpenPressed" removePressed="handler.onRemovePressed">
+                                                path: '/mediaType',
+                                                formatter:'formatThumbnailUrl'
+                                            }" enabledEdit="false" openPressed="onOpenPressed" removePressed="onRemovePressed">
 															<upload:attributes>
 																<ObjectAttribute id="dd1vw" title="Uploaded By" text="{createdBy}" active="false" />
 																<ObjectAttribute id="dd221vw" title="Uploaded on" text="{createdAt}" active="false" />

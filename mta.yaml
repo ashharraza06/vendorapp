@@ -72,6 +72,10 @@ modules:
       - compnav.zip
       name: compnav
       target-path: resources/
+    - artifacts:
+      - polist.zip
+      name: polist
+      target-path: resources/
 - name: vendrcmplain
   type: html5
   path: app/vendrcmplain
@@ -85,6 +89,16 @@ modules:
 - name: compnav
   type: html5
   path: app/compnav
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: polist
+  type: html5
+  path: app/polist
   build-parameters:
     build-result: dist
     builder: custom
