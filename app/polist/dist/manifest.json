@@ -121,8 +121,18 @@
                                         "selectionMode": "Single"
                                     }
                                 }
-                            }
+                            },
+                            "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#table"
                         }
+                    }
+                }
+            }
+        },
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "sap.fe.templates.ListReport.ListReportController": {
+                        "controllerName": "polist.ext.controller.Iistcontroller"
                     }
                 }
             }

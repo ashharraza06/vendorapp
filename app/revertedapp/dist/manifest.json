@@ -1,0 +1,215 @@
+{
+    "_version": "1.59.0",
+    "sap.app": {
+        "id": "revertedapp",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.13.2",
+            "toolsId": "6c511a3f-9937-4759-9ed2-7369e3e0591a"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "odata/v4/my/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "odataVersion": "4.0"
+                }
+            }
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "revertedapp-display": {
+                    "semanticObject": "revertedapp",
+                    "action": "display",
+                    "title": "{{flpTitle}}",
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    }
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.123.1",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ushell": {},
+                "sap.fe.templates": {},
+                "sap.suite.ui.commons": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "revertedapp.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "complainsList",
+                    "target": "complainsList"
+                },
+                {
+                    "pattern": "complains({key}):?query:",
+                    "name": "complainsObjectPage",
+                    "target": "complainsObjectPage"
+                }
+            ],
+            "targets": {
+                "complainsList": {
+                    "type": "Component",
+                    "id": "complainsList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/complains",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "complains": {
+                                    "detail": {
+                                        "route": "complainsObjectPage"
+                                    }
+                                }
+                            },
+                            "initialLoad": "Enabled",
+                            "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#table"
+                        }
+                    }
+                },
+                "complainsObjectPage": {
+                    "type": "Component",
+                    "id": "complainsObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/complains",
+                            "navigation": {},
+                            "content": {
+                                "body": {
+                                    "sections": {
+                                        "Comments": {
+                                            "template": "revertedapp.ext.fragment.Comments",
+                                            "position": {
+                                                "placement": "After",
+                                                "anchor": "ComplaintDetails"
+                                            },
+                                            "title": "Comments",
+                                            "type": "XMLFragment"
+                                        },
+                                        "Attachemnts": {
+                                            "template": "revertedapp.ext.fragment.Attachemnts",
+                                            "position": {
+                                                "placement": "After",
+                                                "anchor": "Comments"
+                                            },
+                                            "title": "Attachments",
+                                            "type": "XMLFragment"
+                                        }
+                                    }
+                                },
+                                "footer": {
+                                    "actions": {
+                                        "submit": {
+                                            "press": "revertedapp.ext.controller.Footer.submit",
+                                            "visible": true,
+                                            "enabled": true,
+                                            "text": "Submit"
+                                        },
+                                        "cancel": {
+                                            "press": "revertedapp.ext.controller.Footer.cancel",
+                                            "visible": true,
+                                            "enabled": true,
+                                            "text": "Cancel",
+                                            "position": {
+                                                "placement": "After",
+                                                "anchor": "submit"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "sap.fe.templates.ObjectPage.ObjectPageController#revertedapp::complainsObjectPage": {
+                        "controllerName": "revertedapp.ext.controller.ObjectPagecomplain"
+                    },
+                    "sap.fe.templates.ListReport.ListReportController": {
+                        "controllerName": "revertedapp.ext.controller.Listreportcontroller"
+                    }
+                }
+            }
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "vendorapplication"
+    }
+}

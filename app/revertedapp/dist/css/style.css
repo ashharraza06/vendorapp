@@ -1,0 +1,17 @@
+.revAttachVBox{
+    height: 300px;
+    overflow: scroll;
+   
+}
+#revertedapp\:\:complainsObjectPage--fe\:\:FooterBar\:\:CustomAction\:\:submit-inner
+{
+    color: white;
+    background-color: mediumseagreen;
+    filter: drop-shadow(2px 4px 6px black);
+}
+#revertedapp\:\:complainsObjectPage--fe\:\:FooterBar\:\:CustomAction\:\:cancel-inner
+{
+    color: white;
+    background-color: orangered;
+    filter: drop-shadow(2px 4px 6px black);
+}

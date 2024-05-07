@@ -41,28 +41,60 @@ annotate service.poheader with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Label : 'pono',
+            Label : 'PO/Invoice Number',
             Value : pono,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'vendor',
+            Label : 'Vendor',
             Value : vendor,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'pannum',
+            Label : 'PAN Number',
             Value : pannum,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'type',
+            Label : 'Type',
             Value : type,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'amount',
+            Label : 'Amount',
             Value : amount,
         },
     ],
+);
+annotate service.poheader with @(
+    UI.SelectionFields : []
+);
+annotate service.poheader with {
+    vendor @Common.Label : 'vendor'
+};
+annotate service.poheader with @(
+    UI.SelectionPresentationVariant #table : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem',
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+                {
+                    $Type : 'UI.SelectOptionType',
+                    PropertyName : vendor,
+                    Ranges : [
+                        {
+                            Sign : #I,
+                            Option : #EQ,
+                            Low : 'ashhar.raza@peolsolutions.com',
+                        },
+                    ],
+                },],
+        },
+    }
 );

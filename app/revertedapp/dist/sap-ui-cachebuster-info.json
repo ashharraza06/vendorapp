@@ -1,0 +1,21 @@
+{
+  "Component-dbg.js": 1713852596978,
+  "manifest.json": 1714988512826,
+  "ext/fragment/Comments.js": 1714031007309,
+  "ext/fragment/Attachemnts.js": 1713869322741,
+  "ext/controller/ObjectPagecomplain.controller.js": 1713857184080,
+  "ext/controller/Listreportcontroller.controller.js": 1714974263057,
+  "ext/controller/Footer.js": 1713874323252,
+  "Component.js": 1713852596978,
+  "Component-preload.js": 1714988513233,
+  "ext/fragment/Comments-dbg.js": 1714031007309,
+  "ext/fragment/Attachemnts-dbg.js": 1713869322741,
+  "ext/controller/ObjectPagecomplain-dbg.controller.js": 1713857184080,
+  "ext/controller/Listreportcontroller-dbg.controller.js": 1714974263057,
+  "ext/controller/Footer-dbg.js": 1713874323252,
+  "i18n/i18n.properties": 1714977407417,
+  "ext/fragment/Comments.fragment.xml": 1713855302649,
+  "ext/fragment/Attachemnts.fragment.xml": 1713856737969,
+  "css/style.css": 1713874127830,
+  "index.html": 1713852596978
+}

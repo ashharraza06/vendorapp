@@ -16,6 +16,7 @@ entity vendorinfo {
 entity poheader {
     key pono      : String;
         vendor    : String;
+        //  @Common.FilterDefaultValue: 'ashhar.raza@peolsolutions.com';
         pannum    : String;
         type      : String;
         amount    : String;
@@ -30,7 +31,7 @@ entity complaint : managed {
         cpono           : String;
         cvencode        : String;
         cpannum         : String;
-        cstatus         : String @Common.FilterDefaultValue: 'Submitted';
+        cstatus         : String;
         ccomplain_about : String;
         cdesc           : String;
         days            : Integer;
@@ -72,23 +73,25 @@ entity approvers {
     key keyy : String;
     key name : String;
 }
-entity workitems{
-    key wid : String;
+
+entity workitems {
+    key wid  : String;
     key name : String;
 }
-entity levels{
-    
-   key level : String;
-   key employeid : String;
-   complainttype : String;
-    
+
+entity levels {
+
+    key level         : String;
+    key employeid     : String;
+    key complainttype : String;
+        Workingdays   : Integer;
+
 }
+
 entity workflowhisotry {
-    key idd                   : UUID;
-        complainno            : String;
-        complainttype         : String;
-        Employee_ID           : String;
-        level                 : String;
+    key complainno            : String;
+    key Employee_ID           : String;
+    key level                 : String;
         Approved_by           : String;
         Employee_Name         : String;
         Title                 : String;

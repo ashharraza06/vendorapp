@@ -13,49 +13,14 @@
 		<pages>
 			<Page id="wizardContentPage" showHeader="false">
 				<content>
-					<Wizard id="VendorComplain"  class="height1" renderMode="Page" navigationChange= "change">
+					<Wizard id="VendorComplain" class="height1" renderMode="Page" navigationChange= "change">
 						<WizardStep id="PoStep" nextStep="ComplainCreationStep" validated="false" title="PO Details" activate="StepTwo" class="wizstep">
-							<HBox class = "withoutPObtn" justifyContent="End">
-							 <Button id="withoutPo" class = "withoutPO" text="Create" press="withoutpo" />
+							<HBox class="withoutPObtn" justifyContent="End">
+								<Button id="withoutPo" class="withoutPO" text="Create" press="withoutpo"/>
 							</HBox>
-							
-							<Table id="idProductsTable" inset="false" mode="SingleSelect" items="{
-								path: '/poheader'
-
-									}" selectionChange="porowchange">
-									<headerToolbar>
-									<Toolbar >
-									<SearchField id="SearchField" width="30vw" enabled="true" search="handleSearch" />
-									</Toolbar>
-									</headerToolbar>
-
-								<columns>
-									<Column id= "p" width="200px">
-										<Text text="PO No/Invoice No" />
-									</Column>
-									<Column id= "v" demandPopin="true">
-										<Text text="Vendor Code" />
-									</Column>
-									<Column demandPopin="true">
-										<Text text="Type" />
-									</Column>
-									<Column demandPopin="true">
-										<Text text="Amount" />
-									</Column>
-								</columns>
-								<items>
-									<ColumnListItem vAlign="Middle" press="onPress">
-										<cells>
-											<Text text="{pono}"></Text>
-											<Text text="{vendor}"></Text>
-											<Text text="{type}"></Text>
-											<Text text="{amount}"></Text>
-										</cells>
-									</ColumnListItem>
-								</items>
-							</Table>
+							<core:ComponentContainer id="screen1" propagateModel="true" height="600px" objectBindings="b" />
 						</WizardStep>
-						<WizardStep id="ComplainCreationStep" nextStep="ReviewStep" validated="false" activate="StepThree" title="Complaints" class="wizstep">
+						<WizardStep id="ComplainCreationStep" nextStep="ReviewStep" validated="false" activate="StepThree" title="Complaint" class="wizstep">
 							<u:ObjectPageLayout id="Object3stepPage" upperCaseAnchorBar="false" flexEnabled="true" height="100%" showFooter="true">
 								<u:sections>
 									<u:ObjectPageSection titleUppercase="false" title="Complaint Table">
@@ -71,7 +36,7 @@
 																<Text text="Complaint No" />
 															</Column>
 															<Column demandPopin="true">
-																<Text text="PO Number" />
+																<Text text="PO/Invoice Number" />
 															</Column>
 															<Column demandPopin="true">
 																<Text text="Vendor Code" />
@@ -107,7 +72,7 @@
 																<Text id="vencode"  class = "vencode" text="Value" />
 															</VBox>
 															<VBox width="50%" id="selPObox">
-																<Label id= "sp" text="Selected PO Number is:"/>
+																<Label id= "sp" text="Selected PO/Invoice Number is:"/>
 																<Text id="pono" class = "vencode" text="Value"/>
 															</VBox>
 														</HBox>
@@ -175,41 +140,6 @@
 						<WizardStep class="wizstep" id="ReviewStep" activate="StepFour" complete="pricingComplete" validated="false" title="Preview">
 							<u:ObjectPageLayout id="Object4stepPage" upperCaseAnchorBar="false" flexEnabled="true" height="100%" showFooter="true">
 								<u:sections>
-									<u:ObjectPageSection titleUppercase="false" title="PAN Details">
-										<u:subSections>
-											<u:ObjectPageSubSection titleUppercase="false">
-												<u:blocks>
-													<VBox id ="revsec1">
-														<!-- <Text text="Selected Pan Details:" class="sapMTitle sapMTitleStyleH3 myHeaderText"/> -->
-														<HBox id = "rev1hbox" class ="revHbox">
-															<Table id="revpanTable" inset="false" items="{
-										path: '/vendor'
-							}">
-																<columns>
-
-																	<Column width="100px">
-																		<Text text="PAN Number" />
-																	</Column>
-																	<Column width="100px">
-																		<Text text="Vendor Code" />
-																	</Column>
-																</columns>
-																<items>
-																	<ColumnListItem vAlign="Middle">
-																		<cells >
-																			<Text text="{panno}"></Text>
-																			<Text text="{vencode}"></Text>
-																		</cells>
-																	</ColumnListItem>
-																</items>
-															</Table>
-															<!-- <Link press="editStepOne" text="Edit" /> -->
-														</HBox>
-													</VBox>
-												</u:blocks>
-											</u:ObjectPageSubSection>
-										</u:subSections>
-									</u:ObjectPageSection>
 									<u:ObjectPageSection titleUppercase="false" title="PO Details">
 										<u:subSections>
 											<u:ObjectPageSubSection>
@@ -222,7 +152,7 @@
 									}" selectionChange="porowchange">
 																<columns>
 																	<Column width="200px">
-																		<Text text="PO Number" />
+																		<Text text="PO/Invoice Number" />
 																	</Column>
 																	<Column demandPopin="true">
 																		<Text text="Vendor Code" />
@@ -266,13 +196,13 @@
 																</VBox>
 															</HBox>
 															<HBox id="po_type" width="100%">
-																<VBox id="po" width="50%">
-																	<Label id="selpo" text="Selected PO:"/>
-																	<Text id="po_val" class="vencode" text="Value"/>
-																</VBox>
 																<VBox id="type" width="50%">
 																	<Label id="seltyp" text="Complaint Type:"/>
 																	<Text id="typ_val" class="vencode" text="Value"/>
+																</VBox>
+																<VBox id="poVbox" width="50%">
+																	<Label id="selpo" text="Selected PO/Invoice Number:"/>
+																	<Text id="po_val" class="vencode" text="Value"/>
 																</VBox>
 															</HBox>
 															<VBox id="desc" width="100%">
@@ -330,6 +260,7 @@
 						<ToolbarSpacer/>
 						<!-- <Button id="smbtn" class = "submit" text="Submit" press="handleWizardSubmit" /> -->
 						<Button id="revbtn" class = "review" text="Preview" press="reviewPress" />
+						<Button id="step2" class = "review" text="Step 2" press="Step2btn" />
 						<Button id="subbtn" class = "submit" text="Submit" press="handleWizardSubmit" />
 						<Button id="cnlbtn" class = "cancel" text="Cancel" press="handleWizardCancel" />
 
@@ -366,7 +297,7 @@
 														</HBox>
 														<HBox id="po_typevw" width="100%">
 															<VBox id="povw" width="30%">
-																<Label id="selpovw" text="PO Number:"/>
+																<Label id="selpovw" text="PO/Invoice Number:"/>
 																<Text id="po_valvw" class="vencode" text="PONO23456" />
 															</VBox>
 															<VBox id="typevw" width="30%">

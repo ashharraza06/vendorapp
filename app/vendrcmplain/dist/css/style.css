@@ -62,7 +62,10 @@
     /* text-shadow: 0 0 0.125rem transparent; */
     filter: drop-shadow(2px 4px 6px black);
 }
-#container-vendrcmplain---App--bckbtn-inner,#container-vendrcmplain---App--withoutPo-inner,#application-vednorinfor-Display-component---App--bckbtn-inner
+#container-vendrcmplain---App--bckbtn-inner,
+#application-vednorinfor-Display-component---App--withoutPo-inner,
+#application-vednorinfor-Display-component---App--step2-inner,
+#container-vendrcmplain---App--withoutPo-inner,#application-vednorinfor-Display-component---App--bckbtn-inner
 {
     /* background-image: none; */
     background-color: #0070f2;

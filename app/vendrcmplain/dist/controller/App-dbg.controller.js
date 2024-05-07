@@ -11,9 +11,9 @@ sap.ui.define([
   function (Controller, Filter, FilterOperator, UserInfo) {
     "use strict";
     var pokey;
-    var vencode = "VEN111";
-    var pono = "-";
-    var pannum;
+    var vencode;
+    var pono;
+    var pannum = "PAN123";
     var comp_type;
     var desc;
     var status;
@@ -24,41 +24,45 @@ sap.ui.define([
     return Controller.extend("vendrcmplain.controller.App", {
       onInit: function (oEvent) {
         debugger
-        try{
-        var oUserInfoService = sap.ushell.Container.getService("UserInfo");
-        var oUser = oUserInfoService.getUser();
-        var userEmail = oUser.getEmail();
-        console.log("User Email:", userEmail);
+        try {
+          var oUserInfoService = sap.ushell.Container.getService("UserInfo");
+          var oUser = oUserInfoService.getUser();
+          var userEmail = oUser.getEmail();
+          console.log("User Email:", userEmail);
+          vencode = userEmail;
         }
         catch (error) {
           console.error("An error occurred while accessing user information:", error);
           // Handle the error gracefully or provide fallback behavior here
         }
+
+        debugger
+        this.byId("screen1").attachBrowserEvent("click", function (oEvent) {
+          porowchange(oEvent);
+        });
+        // this._handleNavigationToStep(1);
+        var ocustomerDetailContainer = this.getOwnerComponent().createComponent({
+          usage: "screen1", async: true, manifest: true
+        });
+        ocustomerDetailContainer.then(
+          function (ocustomerDetail) {
+            debugger
+            this.byId("screen1").setComponent(ocustomerDetail);
+            this._customerDetailContainer = ocustomerDetail;
+          }.bind(this)
+        );
+
         // //this.byId("PanStep").setNextStep(this.getView().byId("PoStep"));
         this._wizard = this.byId("VendorComplain");
         this._oNavContainer = this.byId("wizardNavContainer");
         this._oWizardContentPage = this.byId("wizardContentPage");
         oEvent.oSource.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[1].setVisible(false);
-        // var wizardd = this.byId("VendorComplain");
-        // let steps = wizardd.getSteps()
-        // wizardd.setCurrentStep(steps[3]);
-        // var oModel = this.getView().getModel("device");
-        //   var sDesiredVendorCode = 'VEN222';
-        // oModel.setProperty("/desiredVendorCode", sDesiredVendorCode);
-        // this._handleNavigationToStep(1);
-        // sap.ui.getCore().byId("container-vendrcmplain---App--ComplainCreationStep-nextButton").setVisible(false);
-        // sap.ui.getCore().byId("container-vendrcmplain---App--revbtn").setVisible(false); 
-        // sap.ui.getCore().byId("__button0").setVisible(false);
-        // if (currentStep == 3) {
-        // this._wizard.goToStep(this._wizard.getSteps()[currentStep]);
-        // this._handleNavigationToStep(2);
-
-        // this._wizard.setCurrentStep(this.byId("ComplainCreationStep"));
-        //   this.byId("VendorComplain").nextStep();
-        //   this.byId("VendorComplain").nextStep();
-        // }
 
 
+
+      },
+      b: function (oEvent) {
+        debugger
       },
       // //StepOne: function (oEvent) {
       // // debugger;
@@ -80,7 +84,7 @@ sap.ui.define([
       StepTwo: function (oEvent) {
         debugger
         oEvent.oSource.oParent.oParent.oParent.oParent.oParent.mAggregations.rootControl.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[1].setVisible(false)
-        oEvent.oSource.oParent.oParent.oParent.oParent.oParent.mAggregations.rootControl.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[2].setVisible(false)
+        oEvent.oSource.oParent.oParent.oParent.oParent.oParent.mAggregations.rootControl.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[3].setVisible(false)
         // sap.ui.getCore().byId("container-vendrcmplain---App--subbtn").setVisible(false);
         // this.byId("textcomp").setRequired(true);
         // var path = sap.ui.getCore().byId("container-vendrcmplain---App--PoStep").mAggregations.content[0].mBindingInfos.items.binding;
@@ -97,6 +101,21 @@ sap.ui.define([
       },
       StepThree: function (oEvent) {
         debugger
+        sap.ui.getCore().byId("application-vednorinfor-Display-component---App--step2").setVisible(false);
+        var selectedpo = sap.ui.getCore().byId("polist::poheaderList--fe::table::poheader::LineItem-innerTable")._aSelectedPaths[0];
+        if (selectedpo !== null && typeof selectedpo !== 'undefined' && pono !== "-") {
+          pono = selectedpo.substring(selectedpo.indexOf("(") + 1, selectedpo.indexOf(")"));
+          pono = selectedpo.match(/\('([^']+)'\)/)[1];
+          var path = this.byId("complainTable").mBindingInfos.items.binding;
+          path.filter(
+            new sap.ui.model.Filter({
+              path: "cpono",
+              operator: sap.ui.model.FilterOperator.EQ,
+              value1: pono
+            })
+          );
+          console.log(pono); // Output: PONO12345
+        }
 
         var com = null;
         var add = this.byId("11").mAggregations.items[0].mBindingInfos.items.binding;
@@ -136,16 +155,23 @@ sap.ui.define([
         debugger
 
         desc = this.byId("textcomp").getValue();
-        if (desc != "") {
-          this.byId("textcomp").setValueState("None");
-          this.byId("textcomp").setValueStateText("");
-          this.byId("revbtn").setVisible(true);
-        }
-        else {
-          this.byId("revbtn").setVisible(false);
-          this.byId("textcomp").setValueState("Error");
-          this.byId("textcomp").setValueStateText("Value is required");
+        var currStepPath = this.byId("VendorComplain").getCurrentStep();
+        var parts = currStepPath.split('--');
+        var currStep = parts[parts.length - 1];
 
+
+        if (currStep != "ReviewStep") {
+          if (desc != "") {
+            this.byId("textcomp").setValueState("None");
+            this.byId("textcomp").setValueStateText("");
+            this.byId("revbtn").setVisible(true);
+          }
+          else {
+            this.byId("revbtn").setVisible(false);
+            this.byId("textcomp").setValueState("Error");
+            this.byId("textcomp").setValueStateText("Value is required");
+
+          }
         }
 
         var key = this.byId("ordr").mProperties.selectedKey;
@@ -167,7 +193,7 @@ sap.ui.define([
         debugger;
         desc = this.byId("textcomp").getValue();
         oEvent.oSource.oParent.oParent.oParent.oParent.oParent.mAggregations.rootControl.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[1].setVisible(false);
-        oEvent.oSource.oParent.oParent.oParent.oParent.oParent.mAggregations.rootControl.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[2].setVisible(true);
+        oEvent.oSource.oParent.oParent.oParent.oParent.oParent.mAggregations.rootControl.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[3].setVisible(true);
         // var key = oEvent.oSource.oParent.mAggregations.steps[2].mAggregations.content[0].mAggregations.sections[1].mForwardedAggregations.subSections[0].oParent.oParent.mForwardedAggregations.subSections[0]._aAggregationProxy.blocks[0].mAggregations.items[5].mProperties.selectedKey
         // let arr = oEvent.oSource.oParent.mAggregations.steps[2].mAggregations.content[0].mAggregations.sections[1].mForwardedAggregations.subSections[0].oParent.oParent.mForwardedAggregations.subSections[0]._aAggregationProxy.blocks[0].mAggregations.items[5].mForwardedAggregations.items
         // for (var i = 0; i < 5; i++) {
@@ -181,14 +207,7 @@ sap.ui.define([
         // var path = oEvent.oSource.oParent.mAggregations.steps[3].mAggregations.content[0].mAggregations.items[0].mAggregations.items[1].mAggregations.items[0].mBindingInfos.items.binding;
         // var path = sap.ui.getCore().byId("container-vendrcmplain---App--rev1hbox").mAggregations.items[0].mBindingInfos.items.binding;
         // var path = oEvent.oSource.oParent.mAggregations.steps[3].mAggregations.content[0].mAggregations.sections[0].mAggregations._grid.mAggregations.content[0].mAggregations.blocks[0].mAggregations.items[0].mAggregations.items[0].mBindingInfos.items.binding;
-        var path = this.byId("revpanTable").mBindingInfos.items.binding;
-        path.filter(
-          new sap.ui.model.Filter({
-            path: "vencode",
-            operator: sap.ui.model.FilterOperator.EQ,
-            value1: vencode
-          })
-        );
+
         // var path = oEvent.oSource.oParent.mAggregations.steps[3].mAggregations.content[0].mAggregations.items[1].mAggregations.items[1].mAggregations.items[0].mBindingInfos.items.binding;
         // var path = sap.ui.getCore().byId("container-vendrcmplain---App--rev2hbox").mAggregations.items[0].mBindingInfos.items.binding;
         // var path = oEvent.oSource.oParent.mAggregations.steps[3].mAggregations.content[0].mAggregations.sections[1].mAggregations._grid.mAggregations.content[0].mAggregations.blocks[0].mAggregations.items[0].mAggregations.items[0].mBindingInfos.items.binding;
@@ -229,6 +248,7 @@ sap.ui.define([
         this._handleNavigationToStep(2);
       },
       onListPressed: async function (oEvent) {
+        //review page of already submitted complaints
         debugger
         // currentStep = this._wizard.getProgress();
         var getcomp = oEvent.oSource.mAggregations.cells[0].mProperties.text
@@ -281,6 +301,46 @@ sap.ui.define([
         // //   var details = sap.ui.getCore().byId("container-vendrcmplain---App--panTable")._aSelectedPaths
         // // }
         var nav_title = oEvent.mParameters.step.mProperties.title;
+
+        //applying filter to preview complains
+        if (nav_title == "Preview") {
+          var com = null;
+          var add = this.byId("112").mAggregations.items[0].mBindingInfos.items.binding;
+          add.filter(
+            new sap.ui.model.Filter({
+              path: "size",
+              operator: sap.ui.model.FilterOperator.NE,
+              value1: null
+            })
+          );
+          add.filter(
+            new sap.ui.model.Filter({
+              path: "complaintno",
+              operator: sap.ui.model.FilterOperator.EQ,
+              value1: null
+            })
+          );
+        }
+
+        // here is the code for the change of po selection
+
+        var selectedpo = sap.ui.getCore().byId("polist::poheaderList--fe::table::poheader::LineItem-innerTable")._aSelectedPaths[0];
+        if (selectedpo !== null && typeof selectedpo !== 'undefined') {
+          pono = selectedpo.substring(selectedpo.indexOf("(") + 1, selectedpo.indexOf(")"));
+          pono = selectedpo.match(/\('([^']+)'\)/)[1];
+          this.byId("po_val").setText(pono);
+          this.byId("pono").setText(pono);
+          var path = this.byId("complainTable").mBindingInfos.items.binding;
+          path.filter(
+            new sap.ui.model.Filter({
+              path: "cpono",
+              operator: sap.ui.model.FilterOperator.EQ,
+              value1: pono
+            })
+          );
+          console.log(pono); // Output: PONO12345
+        }
+
         if (nav_title == "Preview") {
           //show submit button
           this.byId("subbtn").setVisible(true);
@@ -318,8 +378,12 @@ sap.ui.define([
       // },
       withoutpo: function (oEvent) {
         debugger
+        // this._wizard.validateStep(this.byId("PoStep"));
+        this._wizard.discardProgress(this._wizard.getSteps()[0]);
+        pono = "-";
         this._wizard.setCurrentStep(this.byId("PoStep"));
         this.byId("selPObox").setVisible(false);
+        this.byId("poVbox").setVisible(false);
         this.byId("VendorComplain").nextStep();
         var path = this.byId("complainTable").mBindingInfos.items.binding;
         path.filter(
@@ -331,68 +395,75 @@ sap.ui.define([
         );
 
       },
-      panrowchange: function (oEvent) {
+      Step2btn: function (oEvent) {
         debugger;
-        this.byId("textcomp").setValue("");
-        this._wizard.setCurrentStep(this.byId("PanStep"));
-        vencode = oEvent.mParameters.listItems[0].mAggregations.cells[1].mProperties.text;
-        pannum = oEvent.mParameters.listItems[0].mAggregations.cells[0].mProperties.text;
-        if (vencode === null || typeof vencode === 'undefined') {
-          // this._wizard.setCurrentStep(this.byId("PanStep"));
-          // this.model.setProperty("/panTable", "Error");
-          this._wizard.invalidateStep(this.byId("PanStep"));
-        }
-        else {
-          // this.model.setProperty("/panTable", "None");
-          this._wizard.validateStep(this.byId("PanStep"));
-
-
-        }
-        // this.byId("PoStep").mAggregations.content[0].getBinding("items").refresh();
-        // this.byId("PoStep").mAggregations.content[0].refreshAggregation;
-        // this.byId("PoStep").mAggregations.content[0].refreshItems;
-
-        var path = this.byId("PoStep").mAggregations.content[0].mBindingInfos.items.binding;
-        path.filter(
-          new sap.ui.model.Filter({
-            path: "vendor",
-            operator: sap.ui.model.FilterOperator.EQ,
-            value1: vencode
-          })
-        );
-        //going to 2nd step here
-        this.byId("VendorComplain").nextStep()
-
-        // this.getView().byId('CreateProductWizard').setCurrentStep(1);
+        // this.byId("step2").setVisible(false);
+        sap.ui.getCore().byId("application-vednorinfor-Display-component---App--step2").setVisible(false)
+        this._wizard.setCurrentStep(this.byId("PoStep"));
+        this.byId("VendorComplain").nextStep();
       },
+      // panrowchange: function (oEvent) {
+      //   debugger;
+      //   this.byId("textcomp").setValue("");
+      //   this._wizard.setCurrentStep(this.byId("PanStep"));
+      //   vencode = oEvent.mParameters.listItems[0].mAggregations.cells[1].mProperties.text;
+      //   pannum = oEvent.mParameters.listItems[0].mAggregations.cells[0].mProperties.text;
+      //   if (vencode === null || typeof vencode === 'undefined') {
+      //     // this._wizard.setCurrentStep(this.byId("PanStep"));
+      //     // this.model.setProperty("/panTable", "Error");
+      //     this._wizard.invalidateStep(this.byId("PanStep"));
+      //   }
+      //   else {
+      //     // this.model.setProperty("/panTable", "None");
+      //     this._wizard.validateStep(this.byId("PanStep"));
+
+
+      //   }
+      //   // this.byId("PoStep").mAggregations.content[0].getBinding("items").refresh();
+      //   // this.byId("PoStep").mAggregations.content[0].refreshAggregation;
+      //   // this.byId("PoStep").mAggregations.content[0].refreshItems;
+
+      //   var path = this.byId("PoStep").mAggregations.content[0].mBindingInfos.items.binding;
+      //   path.filter(
+      //     new sap.ui.model.Filter({
+      //       path: "vendor",
+      //       operator: sap.ui.model.FilterOperator.EQ,
+      //       value1: vencode
+      //     })
+      //   );
+      //   //going to 2nd step here
+      //   this.byId("VendorComplain").nextStep()
+
+      //   // this.getView().byId('CreateProductWizard').setCurrentStep(1);
+      // },
       porowchange: function (oEvent) {
         debugger;
-        // this.byId("textcomp").setValue("");
-        this.byId("selPObox").setVisible(true);
-        this._wizard.setCurrentStep(this.byId("PoStep"));
-        pono = oEvent.mParameters.listItems[0].mAggregations.cells[0].mProperties.text;
+        // // this.byId("textcomp").setValue("");
+        // this.byId("selPObox").setVisible(true);
+        // this._wizard.setCurrentStep(this.byId("PoStep"));
+        // pono = oEvent.mParameters.listItems[0].mAggregations.cells[0].mProperties.text;
 
-        var path3 = this.byId("complainTable").mBindingInfos.items.binding;
+        // var path3 = this.byId("complainTable").mBindingInfos.items.binding;
 
-        path3.filter(
-          new sap.ui.model.Filter({
-            path: "cpono",
-            operator: sap.ui.model.FilterOperator.EQ,
-            value1: pono
-          })
-        );
+        // path3.filter(
+        //   new sap.ui.model.Filter({
+        //     path: "cpono",
+        //     operator: sap.ui.model.FilterOperator.EQ,
+        //     value1: pono
+        //   })
+        // );
 
-        if (pono === null || typeof pono === 'undefined') {
-          // this._wizard.setCurrentStep(this.byId("PanStep"));
-          // this.model.setProperty("/panTable", "Error");
-          this._wizard.invalidateStep(this.byId("PoStep"));
-        }
-        else {
-          // this.model.setProperty("/panTable", "None");
-          this._wizard.validateStep(this.byId("PoStep"));
-        }
+        // if (pono === null || typeof pono === 'undefined') {
+        //   // this._wizard.setCurrentStep(this.byId("PanStep"));
+        //   // this.model.setProperty("/panTable", "Error");
+        //   // this._wizard.invalidateStep(this.byId("PoStep"));
+        // }
+        // else {
+        //   // this.model.setProperty("/panTable", "None");
+        //   // this._wizard.validateStep(this.byId("PoStep"));
+        // }
 
-        this.byId("VendorComplain").nextStep()
+        // this.byId("VendorComplain").nextStep()
 
       },
       onPress: function (oEvent) {
@@ -400,39 +471,7 @@ sap.ui.define([
       },
       wizardCompletedHandler: function () {
         debugger;
-        // var key = sap.ui.getCore().byId("container-vendrcmplain---App--mainvbox").mAggregations.items[5].mProperties.selectedKey;
-        // let arr = sap.ui.getCore().byId("container-vendrcmplain---App--mainvbox").mAggregations.items[5].mForwardedAggregations.items;
-        // for (var i = 0; i < 5; i++) {
-        //   var ikey = arr[i].mProperties.key;
-        //   if (key == ikey) {
-        //     comp_type = arr[i].mProperties.text;
-        //     break;
-        //   }
-        // }
-        // this._oNavContainer.to(this.byId("wizardReviewPage"));
-        // // var path = 
-        // var path = sap.ui.getCore().byId("container-vendrcmplain---App--rev1hbox").mAggregations.items[0].mBindingInfos.items.binding;
-        // path.filter(
-        //   new sap.ui.model.Filter({
-        //     path: "vencode",
-        //     operator: sap.ui.model.FilterOperator.EQ,
-        //     value1: vencode
-        //   })
-        // );
-        // var path = sap.ui.getCore().byId("container-vendrcmplain---App--rev2hbox").mAggregations.items[0].mBindingInfos.items.binding;
-        // path.filter(
-        //   new sap.ui.model.Filter({
-        //     path: "pono",
-        //     operator: sap.ui.model.FilterOperator.EQ,
-        //     value1: pono
-        //   })
-        // );
 
-        // this.byId("pan_val").setText(pannum);
-        // this.byId("ven_val").setText(vencode);
-        // this.byId("po_val").setText(pono);
-        // this.byId("typ_val").setText(comp_type);
-        // this.byId("dsc_val").setValue(desc);
 
       },
       _handleNavigationToStep: function (iStepNumber) {
@@ -536,7 +575,7 @@ sap.ui.define([
                 }
                 status = "Submitted";
                 day = '0';
-                var testdata = JSON.stringify({
+                var testdata1 = JSON.stringify({
                   complainno: compno,
                   cpono: pono,
                   cvencode: vencode,
@@ -546,10 +585,37 @@ sap.ui.define([
                   cdesc: desc,
                   days: day
                 });
-                oFunction.setParameter('data', testdata);
+                oFunction.setParameter('data', testdata1);
                 oFunction.setParameter('status', JSON.stringify({ status: 'postComp' }));
                 await oFunction.execute();
-                oFunction1.setParameter('data', testdata);
+                oFunction.setParameter('data', testdata1);
+                oFunction.setParameter('status', JSON.stringify({ status: 'getlevel' }));
+                await oFunction.execute();
+                let context = oFunction.getBoundContext();
+                let getdata = context.getValue();
+                let result = getdata.value;
+                result = JSON.parse(result);
+                for (var i = 0; i < result.length; i++) {
+                  var level = result[i].level;
+                  var eid = result[i].employeid;
+                  const d = new Date();
+                  const day = String(d.getDate()).padStart(2, '0');
+                  const month = String(d.getMonth() + 1).padStart(2, '0');
+                  const year = d.getFullYear();
+                  const formattedDate = `${day}-${month}-${year}`;
+                  var testdata2 = JSON.stringify({
+                    complainno: compno,
+                    Begin_DateAND_Time: formattedDate,
+                    level: level,
+                    Employee_ID: eid,
+                    Notification_Status: status
+                  });
+                  oFunction.setParameter('data', testdata2);
+                  oFunction.setParameter('status', JSON.stringify({ status: 'postWorkflow' }));
+                  await oFunction.execute();
+
+                }
+                oFunction1.setParameter('data', testdata1);
                 oFunction1.setParameter('status', JSON.stringify({ status: 'postComp' }));
                 await oFunction1.execute();
 
@@ -694,7 +760,7 @@ sap.ui.define([
         var len = result.length;
         for (var i = 0; i < result.length; i++) {
           var oTimelineItem = new sap.suite.ui.commons.TimelineItem("thisuniqid1" + generateUniqueId(), {
-            dateTime: "12/3/34",
+            dateTime: result[i].createdAt,
             // title: "demo title1",
             userNameClickable: false,
             // userNameClicked: "onUserNameClick",

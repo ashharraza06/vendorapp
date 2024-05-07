@@ -69,12 +69,12 @@ modules:
       name: vendrcmplain
       target-path: resources/
     - artifacts:
-      - compnav.zip
-      name: compnav
-      target-path: resources/
-    - artifacts:
       - polist.zip
       name: polist
+      target-path: resources/
+    - artifacts:
+      - revertedapp.zip
+      name: revertedapp
       target-path: resources/
 - name: vendrcmplain
   type: html5
@@ -86,9 +86,9 @@ modules:
     - npm install
     - npm run build:cf
     supported-platforms: []
-- name: compnav
+- name: polist
   type: html5
-  path: app/compnav
+  path: app/polist
   build-parameters:
     build-result: dist
     builder: custom
@@ -96,9 +96,9 @@ modules:
     - npm install
     - npm run build:cf
     supported-platforms: []
-- name: polist
+- name: revertedapp
   type: html5
-  path: app/polist
+  path: app/revertedapp
   build-parameters:
     build-result: dist
     builder: custom

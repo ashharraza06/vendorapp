@@ -69,6 +69,17 @@
         "sap.ui.table": {},
         "sap.ushell": {},
         "sap.suite.ui.commons":{}
+      },
+      "components": {
+        "polist":{
+          "lazy": false
+        }
+      }
+    },
+    "componentUsages": {
+      "screen1":{
+        "name": "polist",
+        "settings":{}
       }
     },
     "contentDensities": {

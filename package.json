@@ -27,7 +27,8 @@
         "build": "rimraf resources mta_archives && mbt build --mtar archive",
         "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
         "watch-compnav": "cds watch --open compnav/webapp/index.html?sap-ui-xx-viewCache=false",
-        "watch-polist": "cds watch --open polist/webapp/index.html?sap-ui-xx-viewCache=false"
+        "watch-polist": "cds watch --open polist/webapp/index.html?sap-ui-xx-viewCache=false",
+        "watch-revertedapp": "cds watch --open revertedapp/webapp/index.html?sap-ui-xx-viewCache=false"
     },
     "cds": {
         "requires": {
@@ -37,6 +38,7 @@
     },
     "sapux": [
         "app/compnav",
-        "app/polist"
+        "app/polist",
+        "app/revertedapp"
     ]
 }
