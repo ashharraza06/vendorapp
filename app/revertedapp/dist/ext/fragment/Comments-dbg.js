@@ -51,16 +51,17 @@ sap.ui.define([
             let result = getdata.value;
             result = JSON.parse(result);
             var len = result.length;
+            var pic = "https://toppng.com/public/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
             for (var i = 0; i < result.length; i++) {
                 var oTimelineItem = new sap.suite.ui.commons.TimelineItem("thisuniqid1" + generateUniqueId(), {
                     dateTime: result[i].createdAt,
-                    // title: "demo title1",
+                    // title: "Reverted",
                     userNameClickable: false,
-                    // userNameClicked: "onUserNameClick",
+                    userNameClicked: "onUserNameClick",
                     select: onPressItems,
-                    // userPicture: "Photo",
-                    text: result[i].comments
-                    // userName: result[i].CREATEDBY
+                    userPicture: pic,
+                    text: result[i].comments,
+                    userName: result[i].createdBy
                 });
                 cdialog.addContent(oTimelineItem);
             }

@@ -1,11 +1,12 @@
 sap.ui.define([
     "sap/m/MessageToast"
-], function(MessageToast) {
+], function (MessageToast) {
     'use strict';
     var compno;
+    var uid;
     debugger;
     return {
-        onPress: function(oEvent) {
+        onPress: function (oEvent) {
             MessageToast.show("Custom handler invoked.");
         },
         onAfterItemAdded: function (oEvent) {
@@ -20,9 +21,9 @@ sap.ui.define([
                 debugger;
                 var data = {
                     mediaType: item.getMediaType(),
-                    complaintno : compno,
+                    complaintno: compno,
                     fileName: item.getFileName(),
-                    size: item.getFileObject().size             
+                    size: item.getFileObject().size
                 };
 
                 var settings = {
@@ -40,7 +41,8 @@ sap.ui.define([
                         .done((results, textStatus, request) => {
                             resolve(results.ID);
                             debugger
-                           
+                            uid = results.ID;
+
                         })
                         .fail((err) => {
                             reject(err);
@@ -62,10 +64,20 @@ sap.ui.define([
                 });
         },
 
-        onUploadCompleted: function (oEvent) {
+        onUploadCompleted: async function (oEvent) {
             debugger
             var oUploadSet = this.byId("uploadSet");
             oUploadSet.removeAllIncompleteItems();
+            let funct = 'submitcomplaints';
+            var username1 = new sap.ushell.services.UserInfo().getEmail();
+            var ofunc = this._view.getModel().bindContext(`/${funct}(...)`);
+            var dat = JSON.stringify({
+                uid: uid,
+                createdBy: username1
+            });
+            ofunc.setParameter('data', dat);
+            ofunc.setParameter('status', JSON.stringify({ status: 'patchattach' }));
+            await ofunc.execute();
             oUploadSet.getBinding("items").refresh();
         },
 
@@ -84,39 +96,39 @@ sap.ui.define([
             var url2 = this._view.getModel().sServiceUrl
             url2 = url2.replace('/odata/v4/my/', '');
             // var url2 = oEvent.getSource().getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().oBindingContexts.undefined.oModel.sServiceUrl
-            
-            var _download = function(item) {
-            	var settings = {
-            		url: url2 + item.getUrl(),
-            		method: "GET",
-            		headers: {
-            			"Content-type": "application/octet-stream"
-            		},
-            		xhrFields: {
-            			responseType: 'blob'
-            		}
-            	};
 
-            	return new Promise((resolve, reject) => {
-            		$.ajax(settings)
-            			.done((result) => {
-            				resolve(result);
-            			})
-            			.fail((err) => {
-            				reject(err);
-            			});
-            	});
+            var _download = function (item) {
+                var settings = {
+                    url: url2 + item.getUrl(),
+                    method: "GET",
+                    headers: {
+                        "Content-type": "application/octet-stream"
+                    },
+                    xhrFields: {
+                        responseType: 'blob'
+                    }
+                };
+
+                return new Promise((resolve, reject) => {
+                    $.ajax(settings)
+                        .done((result) => {
+                            resolve(result);
+                        })
+                        .fail((err) => {
+                            reject(err);
+                        });
+                });
             };
 
             _download(item)
-            	.then((blob) => {
-            		var url = window.URL.createObjectURL(blob);
-            		// Open the URL in a new tab
-            		window.open(url, '_blank');
-            	})
-            	.catch((err) => {
-            		console.log(err);
-            	});
+                .then((blob) => {
+                    var url = window.URL.createObjectURL(blob);
+                    // Open the URL in a new tab
+                    window.open(url, '_blank');
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
 
 
@@ -148,7 +160,7 @@ sap.ui.define([
             debugger
             var data = {
                 mediaType: item.getMediaType(),
-                complaintno : compno,
+                complaintno: compno,
                 fileName: item.getFileName(),
                 size: item.getFileObject().size
             };
@@ -167,7 +179,7 @@ sap.ui.define([
                     .done((results, textStatus, request) => {
                         resolve(results.ID);
                         debugger
-                        
+
                     })
                     .fail((err) => {
                         reject(err);

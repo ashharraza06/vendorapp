@@ -10,10 +10,13 @@ sap.ui.define([
             var path = location.href;
             var compno = path.match(/\('(\d+-\d+)'\)/)[1];
             var comment = sap.ui.getCore().byId("revertedapp::complainsObjectPage--fe::CustomSubSection::Comments--ta").getValue();
+            var comp_type = sap.ui.getCore().byId("revertedapp::complainsObjectPage--fe::FormContainer::ComplaintDetails::FormElement::DataField::ccomplain_about::Field").getValue();
+            var username = new sap.ushell.services.UserInfo().getEmail();
 
             var testdata = JSON.stringify({
                 complainno: compno,
-                comments: comment
+                comments: comment,
+                createdBy: username
             });
 
             let functionname = 'submitcomplaints';
@@ -35,6 +38,8 @@ sap.ui.define([
                             debugger
                             await oFunction.execute();
                             var status = "Submitted";
+                            let functionname1 = 'triggerProcess';
+                            let oFunction1 = this.oView.getModel().bindContext(`/${functionname1}(...)`);
                             let revtestdata = JSON.stringify({ complainno: compno, cstatus: status });
                             oFunction.setParameter('data', revtestdata);
                             oFunction.setParameter('status', JSON.stringify({ status: 'revsubmitted' }))
@@ -46,7 +51,13 @@ sap.ui.define([
                             setTimeout(function () {
                                 location.reload();
                             }, 1000);
-
+                            var testdata1 = JSON.stringify({
+                                complainno: compno,
+                                ccomplain_about: comp_type,
+                              });
+                            oFunction1.setParameter('data', testdata1);
+                            oFunction1.setParameter('status', JSON.stringify({ status: '' }));
+                            await oFunction1.execute();
                         }
                     }),
                     new sap.m.Button({
@@ -64,11 +75,11 @@ sap.ui.define([
         cancel: function () {
             // MessageToast.show("Custom handler invoked.");
             var oDialog = new sap.m.Dialog({
-                title: "Submit",
+                title: "Cancel",
                 resizable: true,
                 draggable: true,
                 content: [
-                    new sap.m.Label({ text: "Are you sure you want to submit for approval?" })
+                    new sap.m.Label({ text: "Are you sure you want to cancel for approval?" })
                 ],
                 buttons: [
                     new sap.m.Button({

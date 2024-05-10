@@ -20,6 +20,8 @@ sap.ui.define([
     var day;
     var compno;
     var commnetbox;
+    var username1 = new sap.ushell.services.UserInfo().getEmail();
+    var uid;
     let filesids = [];
     return Controller.extend("vendrcmplain.controller.App", {
       onInit: function (oEvent) {
@@ -106,15 +108,30 @@ sap.ui.define([
         if (selectedpo !== null && typeof selectedpo !== 'undefined' && pono !== "-") {
           pono = selectedpo.substring(selectedpo.indexOf("(") + 1, selectedpo.indexOf(")"));
           pono = selectedpo.match(/\('([^']+)'\)/)[1];
+          // var path = this.byId("complainTable").mBindingInfos.items.binding;
+          // path.filter(
+          //   new sap.ui.model.Filter({
+          //     path: "cpono",
+          //     operator: sap.ui.model.FilterOperator.EQ,
+          //     value1: pono
+          //   })
+          // );
           var path = this.byId("complainTable").mBindingInfos.items.binding;
-          path.filter(
+          path.filter([
             new sap.ui.model.Filter({
               path: "cpono",
               operator: sap.ui.model.FilterOperator.EQ,
               value1: pono
+            }),
+            new sap.ui.model.Filter({
+              path: "cvencode", // New field to filter
+              operator: sap.ui.model.FilterOperator.EQ,
+              value1: username1 // Provide the value for cvencode
             })
-          );
+          ]);
+
           console.log(pono); // Output: PONO12345
+
         }
 
         var com = null;
@@ -268,7 +285,12 @@ sap.ui.define([
         let getdata = context.getValue();
         let result = getdata.value;
         result = JSON.parse(result);
-        this.byId("po_valvw").setText(result[0].cpono);
+        if (result[0].cpono == '-') {
+          this.byId("povw").setVisible(false);
+        }
+        else {
+          this.byId("po_valvw").setText(result[0].cpono);
+        }
         this.byId("ven_valvw").setText(result[0].cvencode);
         this.byId("pan_valvw").setText(result[0].cpannum);
         this.byId("status_valvw").setText(result[0].cstatus);
@@ -388,9 +410,14 @@ sap.ui.define([
         var path = this.byId("complainTable").mBindingInfos.items.binding;
         path.filter(
           new sap.ui.model.Filter({
-            path: "cvencode",
+            path: "cpono",
             operator: sap.ui.model.FilterOperator.EQ,
-            value1: "VEN111"
+            value1: pono
+          }),
+          new sap.ui.model.Filter({
+            path: "cvencode", // New field to filter
+            operator: sap.ui.model.FilterOperator.EQ,
+            value1: username1 // Provide the value for cvencode
           })
         );
 
@@ -616,7 +643,7 @@ sap.ui.define([
 
                 }
                 oFunction1.setParameter('data', testdata1);
-                oFunction1.setParameter('status', JSON.stringify({ status: 'postComp' }));
+                oFunction1.setParameter('status', JSON.stringify({ status: '' }));
                 await oFunction1.execute();
 
 
@@ -791,12 +818,12 @@ sap.ui.define([
         // var url1 = `/odata/v4/my/`
         var item = oEvent.getParameter("item");
 
-        var _createEntity = function (item) {
+        var _createEntity = function (item, username) {
           debugger;
           var data = {
             mediaType: item.getMediaType(),
             fileName: item.getFileName(),
-            size: item.getFileObject().size
+            size: item.getFileObject().size,
           };
 
           var settings = {
@@ -815,6 +842,7 @@ sap.ui.define([
                 resolve(results.ID);
                 debugger
                 filesids.push(results.ID);
+                uid = results.ID;
               })
               .fail((err) => {
                 reject(err);
@@ -831,16 +859,26 @@ sap.ui.define([
             var oUploadSet = this.byId("uploadSet");
             oUploadSet.setHttpRequestMethod("PUT");
             oUploadSet.uploadItem(item);
+
           })
           .catch((err) => {
             console.log(err);
           });
       },
 
-      onUploadCompleted: function (oEvent) {
+      onUploadCompleted: async function (oEvent) {
         debugger
         var oUploadSet = this.byId("uploadSet");
         oUploadSet.removeAllIncompleteItems();
+        let funct = 'submitcomplaints';
+        var ofunc = this.getView().getModel().bindContext(`/${funct}(...)`);
+        var dat = JSON.stringify({
+          uid:uid,
+          createdBy:username1
+        });
+        ofunc.setParameter('data', dat);
+        ofunc.setParameter('status', JSON.stringify({ status: 'patchattach' }));
+        await ofunc.execute();
         oUploadSet.getBinding("items").refresh();
       },
 
@@ -848,7 +886,7 @@ sap.ui.define([
         debugger
         oEvent.preventDefault();
         oEvent.getParameter("item").getBindingContext().delete();
-        MessageToast.show("Selected file has been deleted");
+        sap.m.MessageToast.show("Selected file has been deleted");
       },
 
       onOpenPressed: function (oEvent) {
@@ -921,10 +959,11 @@ sap.ui.define([
 
       _createEntity: function (item) {
         debugger
+        // var username = new sap.ushell.services.UserInfo().getEmail();
         var data = {
           mediaType: item.getMediaType(),
           fileName: item.getFileName(),
-          size: item.getFileObject().size
+          size: item.getFileObject().size,
         };
 
         var settings = {

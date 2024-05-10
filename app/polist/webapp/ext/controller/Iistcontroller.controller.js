@@ -28,10 +28,7 @@ sap.ui.define(['sap/ui/core/mvc/ControllerExtension', 'sap/ushell/services/UserI
 			{
 				onBeforeBinding: function (oEvent) {
 					debugger
-					var oUserInfoService = sap.ushell.Container.getService("UserInfo");
-					var oUser = oUserInfoService.getUser();
-					var userEmail = oUser.getEmail();
-					console.log("User Email:", userEmail);
+					var userEmail = new sap.ushell.services.UserInfo().getEmail();
 					var vencode = userEmail;
 					var filterVal = sap.ui.getCore().byId("polist::poheaderList--fe::FilterBar::poheader").getFilterConditions();
 					filterVal.vendor[0].values[0] = vencode;

@@ -46,7 +46,7 @@ annotate service.poheader with @(
         },
         {
             $Type : 'UI.DataField',
-            Label : 'Vendor',
+            Label : 'Vendor Code',
             Value : vendor,
         },
         {

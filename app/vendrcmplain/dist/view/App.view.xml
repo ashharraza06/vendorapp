@@ -329,7 +329,7 @@
 												<HBox id="buttonContainer" alignItems="End" justifyContent="End" width="100%">
 													<Button id="comm" class = "commentbtn" text="Comments" press="comments" icon="sap-icon://comment" />
 												</HBox>
-												<TextArea id="ta" rows="8" width="100%" value="Demo Comments" editable="false" class="commenthbox" />
+												<TextArea id="ta" rows="8" width="100%" value=" " editable="false" class="commenthbox" />
 
 											</VBox>
 

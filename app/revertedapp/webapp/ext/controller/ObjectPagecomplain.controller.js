@@ -16,6 +16,10 @@ sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExten
 			routing: {
 				onAfterBinding:  function (oEvent) {
 					debugger;
+					var po = sap.ui.getCore().byId("revertedapp::complainsObjectPage--fe::FormContainer::ComplaintDetails::FormElement::DataField::cpono::Field").getValue();
+					if (po == '-'){
+						sap.ui.getCore().byId("revertedapp::complainsObjectPage--fe::FormContainer::ComplaintDetails::FormElement::DataField::cpono").setVisible(false);
+					}
 					var path = location.href;
 					var compno = path.match(/\('(\d+-\d+)'\)/)[1];
 					var add = this.base.getView().getContent()[0].getSections()[3].mAggregations._grid.getContent()[0].mAggregations._grid.getContent()[0].getContent().getItems()[0].mBindingInfos.items.binding;

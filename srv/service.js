@@ -2,7 +2,7 @@ const { insert } = require('@sap/cds/libx/_runtime/hana/execute');
 const axios = require('axios');
 module.exports = async function () {
 
-    let { complains, comment, workitems, workflowhistory, levels } = this.entities;
+    let { complains, comment, workitems, workflowhistory, levels, files } = this.entities;
 
     this.before('CREATE', 'files', req => {
         console.log('Create called')
@@ -49,9 +49,13 @@ module.exports = async function () {
             const daysDiff = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
             var days = daysDiff.toString();
             let update2 = await UPDATE(complains).set({ cstatus: status }).where({ complainno: comp });
-            let post = await INSERT.into(comment).entries({ complainno: comp, comments: comm });
+            console.log("update2", update2);
+            let post = await INSERT.into(comment).entries({ complainno: comp, comments: comm, createdBy: approvedby });
+            console.log("post", post);
             let update1 = await UPDATE(workflowhistory).set({ Notification_Status: status, End_DateAND_Time: formattedDate, Approved_by: approvedby, Days_Taken: days }).where({ complainno: comp, level: lvl });
+            console.log("update1", update1);
         }
+    
         else if (status == 'Reverted') {
             var comm = req.data.pannum;
             console.log("comm", comm);
@@ -65,24 +69,27 @@ module.exports = async function () {
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const year = d.getFullYear();
             const formattedDate = `${day}-${month}-${year}`;
-            // let select_bd = await SELECT(workflowhistory).where({ complainno: comp, level: lvl })
-            // console.log("select_bd", select_bd);
-            // let bd = select_bd[0].Begin_DateAND_Time;
-            // console.log("bd", bd);
-            // const startDateParts = bd.split("-").map(Number);
-            // const endDateParts = formattedDate.split("-").map(Number);
-            // const startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
-            // const endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
+            let select_bd = await SELECT(workflowhistory).where({ complainno: comp, level: lvl })
+            console.log("select_bd", select_bd);
+            let bd = select_bd[0].Begin_DateAND_Time;
+            console.log("bd", bd);
+            const startDateParts = bd.split("-").map(Number);
+            const endDateParts = formattedDate.split("-").map(Number);
+            const startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
+            const endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
 
-            // // Calculate the difference in milliseconds
-            // const differenceInMs = endDate - startDate;
+            // Calculate the difference in milliseconds
+            const differenceInMs = endDate - startDate;
 
-            // // Convert milliseconds to days
-            // const daysDiff = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
-            // var days = daysDiff.toString();
+            // Convert milliseconds to days
+            const daysDiff = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
+            var days = daysDiff.toString();
             let update2 = await UPDATE(complains).set({ cstatus: status }).where({ complainno: comp });
-            let post = await INSERT.into(comment).entries({ complainno: comp, comments: comm });
-            let update1 = await UPDATE(workflowhistory).set({ Notification_Status: status, End_DateAND_Time: formattedDate, Approved_by: approvedby }).where({ complainno: comp, level: lvl });
+            console.log("update2", update2);
+            let post = await INSERT.into(comment).entries({ complainno: comp, comments: comm, createdBy: approvedby });
+            console.log("post", post);
+            let update1 = await UPDATE(workflowhistory).set({ Notification_Status: status, End_DateAND_Time: formattedDate, Approved_by: approvedby, Days_Taken: days }).where({ complainno: comp, level: lvl });
+            console.log("update1", update1);
         }
 
     })
@@ -252,6 +259,27 @@ module.exports = async function () {
             await UPDATE(complains).set({ cstatus: result.cstatus }).where({ complainno: comp });
             return
         }
+        if (call === 'patchattach') {
+            try {
+                var uid = result.uid;
+                console.log("uid",uid);
+                var cb = result.createdBy;
+                console.log("cb",cb);
+
+                // Assuming 'files' is your database table
+                var up1 = await UPDATE(files).set({ createdBy: cb }).where({ ID: uid });
+                
+                console.log("Updated records:", up1);
+                
+                // Return success message or updated records count if needed
+                return up1;
+            } catch (error) {
+                console.error("Error updating records:", error);
+                // Handle error
+                throw error; // or return appropriate error response
+            }
+        }
+        
 
     })
 }
