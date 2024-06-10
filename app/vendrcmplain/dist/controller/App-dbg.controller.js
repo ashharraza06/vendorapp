@@ -13,7 +13,7 @@ sap.ui.define([
     var pokey;
     var vencode;
     var pono;
-    var pannum = "PAN123";
+    var pannum;
     var comp_type;
     var desc;
     var status;
@@ -24,19 +24,24 @@ sap.ui.define([
     var uid;
     let filesids = [];
     return Controller.extend("vendrcmplain.controller.App", {
-      onInit: function (oEvent) {
+      onInit: async function (oEvent) {
         debugger
-        try {
-          var oUserInfoService = sap.ushell.Container.getService("UserInfo");
-          var oUser = oUserInfoService.getUser();
-          var userEmail = oUser.getEmail();
-          console.log("User Email:", userEmail);
-          vencode = userEmail;
-        }
-        catch (error) {
-          console.error("An error occurred while accessing user information:", error);
-          // Handle the error gracefully or provide fallback behavior here
-        }
+
+        let functionname = 'submitcomplaints';
+        let oFunction = this.getView().getModel().bindContext(`/${functionname}(...)`);
+        var testdata = JSON.stringify({
+          panno: username1
+        });
+        oFunction.setParameter('data', testdata);
+        oFunction.setParameter('status', JSON.stringify({ status: 'getvendor' }));
+        await oFunction.execute();
+        debugger
+
+        let context = oFunction.getBoundContext();
+        let getdata = context.getValue();
+        let result = getdata.value;
+        result = JSON.parse(result);
+        vencode = result[0].vencode
 
         debugger
         this.byId("screen1").attachBrowserEvent("click", function (oEvent) {
@@ -126,7 +131,7 @@ sap.ui.define([
             new sap.ui.model.Filter({
               path: "cvencode", // New field to filter
               operator: sap.ui.model.FilterOperator.EQ,
-              value1: username1 // Provide the value for cvencode
+              value1: vencode // Provide the value for cvencode
             })
           ]);
 
@@ -417,7 +422,7 @@ sap.ui.define([
           new sap.ui.model.Filter({
             path: "cvencode", // New field to filter
             operator: sap.ui.model.FilterOperator.EQ,
-            value1: username1 // Provide the value for cvencode
+            value1: vencode // Provide the value for cvencode
           })
         );
 
@@ -602,6 +607,7 @@ sap.ui.define([
                 }
                 status = "Submitted";
                 day = '0';
+                var baseurl = this.oView.getModel().sServiceUrl;
                 var testdata1 = JSON.stringify({
                   complainno: compno,
                   cpono: pono,
@@ -611,6 +617,17 @@ sap.ui.define([
                   ccomplain_about: comp_type,
                   cdesc: desc,
                   days: day
+                });
+                var testdata3 = JSON.stringify({
+                  complainno: compno,
+                  cpono: pono,
+                  cvencode: vencode,
+                  cpannum: pannum,
+                  cstatus: status,
+                  ccomplain_about: comp_type,
+                  cdesc: desc,
+                  days: day,
+                  baseurl: baseurl
                 });
                 oFunction.setParameter('data', testdata1);
                 oFunction.setParameter('status', JSON.stringify({ status: 'postComp' }));
@@ -642,9 +659,9 @@ sap.ui.define([
                   await oFunction.execute();
 
                 }
-                oFunction1.setParameter('data', testdata1);
-                oFunction1.setParameter('status', JSON.stringify({ status: '' }));
-                await oFunction1.execute();
+                // oFunction1.setParameter('data', testdata3);
+                // oFunction1.setParameter('status', JSON.stringify({ status: '' }));
+                // await oFunction1.execute();
 
 
 
@@ -818,7 +835,7 @@ sap.ui.define([
         // var url1 = `/odata/v4/my/`
         var item = oEvent.getParameter("item");
 
-        var _createEntity = function (item, username) {
+        var _createEntity = function (item) {
           debugger;
           var data = {
             mediaType: item.getMediaType(),
@@ -873,8 +890,8 @@ sap.ui.define([
         let funct = 'submitcomplaints';
         var ofunc = this.getView().getModel().bindContext(`/${funct}(...)`);
         var dat = JSON.stringify({
-          uid:uid,
-          createdBy:username1
+          uid: uid,
+          createdBy: username1
         });
         ofunc.setParameter('data', dat);
         ofunc.setParameter('status', JSON.stringify({ status: 'patchattach' }));

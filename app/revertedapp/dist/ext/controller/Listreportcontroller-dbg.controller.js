@@ -15,17 +15,28 @@ sap.ui.define(['sap/ui/core/mvc/ControllerExtension','sap/ushell/services/UserIn
 			},
 		routing:
 			{
-				onBeforeBinding: function (oEvent) {
+				onBeforeBinding: async function (oEvent) {
 					debugger;
-					var oUserInfoService = sap.ushell.Container.getService("UserInfo");
-						var oUser = oUserInfoService.getUser();
-						var userEmail = oUser.getEmail();
-						console.log("User Email:", userEmail);
-						var vencode = userEmail;
+					var userEmail = new sap.ushell.services.UserInfo().getEmail();
+					var panno = userEmail;
+					let functionname = 'submitcomplaints';
+					let oFunction = this.getView().getModel().bindContext(`/${functionname}(...)`);
+					var testdata = JSON.stringify({
+						panno : panno 
+					  });
+					oFunction.setParameter('data', testdata);
+					oFunction.setParameter('status', JSON.stringify({ status: 'getvendor' }));
+					await oFunction.execute();
+					let context = oFunction.getBoundContext();
+					let getdata = context.getValue();
+					let result = getdata.value;
+					result = JSON.parse(result);
+					var vencode = result[0].vencode
 					var filterVal = sap.ui.getCore().byId("revertedapp::complainsList--fe::FilterBar::complains").getFilterConditions();
 					sap.ui.getCore().byId("revertedapp::complainsList--fe::FilterBar::complains").getFilterConditions().cvencode[0].values[0];
 					filterVal.cvencode[0].values[0] = vencode;
 					sap.ui.getCore().byId("revertedapp::complainsList--fe::FilterBar::complains").setFilterConditions(filterVal);
+					sap.ui.getCore().byId("revertedapp::complainsList--fe::FilterBar::complains-btnSearch").firePress()
 				},
 				onAfterBinding: function (oEvent) {
 					debugger;

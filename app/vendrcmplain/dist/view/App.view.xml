@@ -186,7 +186,7 @@
 														<!-- Your content here -->
 														<VBox id="compvbox" class="compVbox">
 															<HBox id="pan_ven" width="100%">
-																<VBox id="pan" width="50%">
+																<VBox id="pan" visible="false" width="50%">
 																	<Label id="selpan" text="Selected Pan Number:"/>
 																	<Text id="pan_val" class="vencode" text="Value"/>
 																</VBox>

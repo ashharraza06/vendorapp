@@ -131,7 +131,7 @@ annotate service.complains with @(UI.SelectionPresentationVariant #table: {
                 Ranges      : [{
                     Sign  : #I,
                     Option: #EQ,
-                    Low   : '  ',
+                    Low   : 'null',
                 }, ],
             },
         ],

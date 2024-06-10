@@ -26,13 +26,29 @@ sap.ui.define(['sap/ui/core/mvc/ControllerExtension', 'sap/ushell/services/UserI
 			},
 			routing:
 			{
-				onBeforeBinding: function (oEvent) {
+				onBeforeBinding: async function (oEvent) {
 					debugger
 					var userEmail = new sap.ushell.services.UserInfo().getEmail();
-					var vencode = userEmail;
+					var panno = userEmail;
+					let functionname = 'submitcomplaints';
+					let oFunction = this.getView().getModel().bindContext(`/${functionname}(...)`);
+					var testdata = JSON.stringify({
+						panno : panno 
+					  });
+					oFunction.setParameter('data', testdata);
+					oFunction.setParameter('status', JSON.stringify({ status: 'getvendor' }));
+					await oFunction.execute();
+					debugger
+
+					let context = oFunction.getBoundContext();
+					let getdata = context.getValue();
+					let result = getdata.value;
+					result = JSON.parse(result);
+					var vencode = result[0].vencode
 					var filterVal = sap.ui.getCore().byId("polist::poheaderList--fe::FilterBar::poheader").getFilterConditions();
 					filterVal.vendor[0].values[0] = vencode;
 					sap.ui.getCore().byId("polist::poheaderList--fe::FilterBar::poheader").setFilterConditions(filterVal);
+					sap.ui.getCore().byId("polist::poheaderList--fe::FilterBar::poheader-btnSearch").firePress()
 				}
 
 			}

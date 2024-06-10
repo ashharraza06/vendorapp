@@ -51,11 +51,6 @@ annotate service.poheader with @(
         },
         {
             $Type : 'UI.DataField',
-            Label : 'PAN Number',
-            Value : pannum,
-        },
-        {
-            $Type : 'UI.DataField',
             Label : 'Type',
             Value : type,
         },
@@ -91,7 +86,7 @@ annotate service.poheader with @(
                         {
                             Sign : #I,
                             Option : #EQ,
-                            Low : 'ashhar.raza@peolsolutions.com',
+                            Low : 'null',
                         },
                     ],
                 },],
