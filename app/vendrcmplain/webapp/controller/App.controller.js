@@ -210,7 +210,7 @@ sap.ui.define([
         this.byId("typ_val").setText(comp_type);
         this.byId("dsc_val").setValue(desc);
       },
-      StepFour: function (oEvent) {
+      StepFour: async function (oEvent) {
 
         debugger;
         desc = this.byId("textcomp").getValue();
@@ -233,14 +233,48 @@ sap.ui.define([
         // var path = oEvent.oSource.oParent.mAggregations.steps[3].mAggregations.content[0].mAggregations.items[1].mAggregations.items[1].mAggregations.items[0].mBindingInfos.items.binding;
         // var path = sap.ui.getCore().byId("container-vendrcmplain---App--rev2hbox").mAggregations.items[0].mBindingInfos.items.binding;
         // var path = oEvent.oSource.oParent.mAggregations.steps[3].mAggregations.content[0].mAggregations.sections[1].mAggregations._grid.mAggregations.content[0].mAggregations.blocks[0].mAggregations.items[0].mAggregations.items[0].mBindingInfos.items.binding;
-        var path = this.byId("revPoTable").mBindingInfos.items.binding;
-        path.filter(
-          new sap.ui.model.Filter({
-            path: "pono",
-            operator: sap.ui.model.FilterOperator.EQ,
-            value1: pono
-          })
-        );
+        // var path = this.byId("revPoTable").mBindingInfos.items.binding;
+        // path.filter(
+        //   new sap.ui.model.Filter({
+        //     path: "pono",
+        //     operator: sap.ui.model.FilterOperator.EQ,
+        //     value1: pono
+        //   })
+        // );
+        var selectedpo = sap.ui.getCore().byId("polist::poheaderList--fe::table::poheader::LineItem-innerTable")._aSelectedPaths[0];
+        if (selectedpo !== null && typeof selectedpo !== 'undefined') {
+          let functionname = 'submitcomplaints';
+          let oFunction = this.oView.getModel().bindContext(`/${functionname}(...)`);
+          var selectedpodata = JSON.stringify({
+            pono: pono
+          });
+          oFunction.setParameter('data', selectedpodata);
+          oFunction.setParameter('status', JSON.stringify({ status: 'getpo' }));
+          await oFunction.execute();
+          let context = oFunction.getBoundContext().getValue();
+          let result = context.value;
+          result = JSON.parse(result);
+          var vend = result[0].vendor;
+          var t = result[0].type;
+          var am = result[0].amount;
+          var oTable = this.byId("revPoTable");
+          oTable.destroyColumns();
+          var oColumn1 = new sap.m.Column({ header: new sap.m.Text({ text: "PO/Invoice Number" }) })
+          var oColumn2 = new sap.m.Column({ header: new sap.m.Text({ text: "Vendor Code" }) });
+          var oColumn3 = new sap.m.Column({ header: new sap.m.Text({ text: "Type" }) });
+          var oColumn4 = new sap.m.Column({ header: new sap.m.Text({ text: "Amount" }) });
+
+          oTable.addColumn(oColumn1);
+          oTable.addColumn(oColumn2);
+          oTable.addColumn(oColumn3);
+          oTable.addColumn(oColumn4);
+          var oRow = new sap.m.ColumnListItem();
+          oRow.addCell(new sap.m.Text({ text: pono }));
+          oRow.addCell(new sap.m.Text({ text: vend }));
+          oRow.addCell(new sap.m.Text({ text: t }));
+          oRow.addCell(new sap.m.Text({ text: am }));
+          oTable.addItem(oRow);
+        }
         var com = null;
         var add = this.byId("112").mAggregations.items[0].mBindingInfos.items.binding;
         add.filter(
@@ -320,7 +354,7 @@ sap.ui.define([
         // });
 
       },
-      change: function (oEvent) {
+      change: async function (oEvent) {
         debugger
 
         // var title = sap.ui.getCore().byId("container-vendrcmplain---App--PanStep").mProperties.title
@@ -353,6 +387,8 @@ sap.ui.define([
 
         var selectedpo = sap.ui.getCore().byId("polist::poheaderList--fe::table::poheader::LineItem-innerTable")._aSelectedPaths[0];
         if (selectedpo !== null && typeof selectedpo !== 'undefined') {
+          this.byId("selPObox").setVisible(true);
+          this.byId("poVbox").setVisible(true);
           pono = selectedpo.substring(selectedpo.indexOf("(") + 1, selectedpo.indexOf(")"));
           pono = selectedpo.match(/\('([^']+)'\)/)[1];
           this.byId("po_val").setText(pono);
@@ -366,6 +402,40 @@ sap.ui.define([
             })
           );
           console.log(pono); // Output: PONO12345
+          if (nav_title == "Preview") {
+            let functionname = 'submitcomplaints';
+            let oFunction = this.oView.getModel().bindContext(`/${functionname}(...)`);
+            var selectedpodata = JSON.stringify({
+              pono: pono
+            });
+            oFunction.setParameter('data', selectedpodata);
+            oFunction.setParameter('status', JSON.stringify({ status: 'getpo' }));
+            await oFunction.execute();
+            let context = oFunction.getBoundContext().getValue();
+            let result = context.value;
+            result = JSON.parse(result);
+            var vend = result[0].vendor;
+            var t = result[0].type;
+            var am = result[0].amount;
+            var oTable = this.byId("revPoTable");
+            oTable.destroyColumns();
+            oTable.removeAllItems();
+            var oColumn1 = new sap.m.Column({ header: new sap.m.Text({ text: "PO/Invoice Number" }) })
+            var oColumn2 = new sap.m.Column({ header: new sap.m.Text({ text: "Vendor Code" }) });
+            var oColumn3 = new sap.m.Column({ header: new sap.m.Text({ text: "Type" }) });
+            var oColumn4 = new sap.m.Column({ header: new sap.m.Text({ text: "Amount" }) });
+
+            oTable.addColumn(oColumn1);
+            oTable.addColumn(oColumn2);
+            oTable.addColumn(oColumn3);
+            oTable.addColumn(oColumn4);
+            var oRow = new sap.m.ColumnListItem();
+            oRow.addCell(new sap.m.Text({ text: pono }));
+            oRow.addCell(new sap.m.Text({ text: vend }));
+            oRow.addCell(new sap.m.Text({ text: t }));
+            oRow.addCell(new sap.m.Text({ text: am }));
+            oTable.addItem(oRow);
+          }
         }
 
         if (nav_title == "Preview") {
@@ -405,12 +475,15 @@ sap.ui.define([
       // },
       withoutpo: function (oEvent) {
         debugger
+        sap.ui.getCore().byId("polist::poheaderList--fe::table::poheader::LineItem-innerTable").removeSelections();
         // this._wizard.validateStep(this.byId("PoStep"));
         this._wizard.discardProgress(this._wizard.getSteps()[0]);
         pono = "-";
         this._wizard.setCurrentStep(this.byId("PoStep"));
         this.byId("selPObox").setVisible(false);
         this.byId("poVbox").setVisible(false);
+        var oTable = this.byId("revPoTable");
+        oTable.removeAllItems();
         this.byId("VendorComplain").nextStep();
         var path = this.byId("complainTable").mBindingInfos.items.binding;
         path.filter(
@@ -659,13 +732,13 @@ sap.ui.define([
                   await oFunction.execute();
 
                 }
-                // oFunction1.setParameter('data', testdata3);
-                // oFunction1.setParameter('status', JSON.stringify({ status: '' }));
-                // await oFunction1.execute();
+                oFunction1.setParameter('data', testdata3);
+                oFunction1.setParameter('status', JSON.stringify({ status: '' }));
+                await oFunction1.execute();
 
 
 
-                // sap.m.MessageToast.show("Saved successfully");
+                sap.m.MessageToast.show("Saved successfully");
                 this._handleNavigationToStep(0);
                 this._wizard.discardProgress(this._wizard.getSteps()[0]);
                 location.reload();

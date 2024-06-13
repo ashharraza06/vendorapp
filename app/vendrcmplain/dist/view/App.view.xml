@@ -148,7 +148,7 @@
 														<!-- <Text text="Selected PO Details:" class="sapMTitle sapMTitleStyleH3 myHeaderText"/> -->
 														<HBox id = "rev2hbox" class = "revHbox">
 															<Table id="revPoTable" inset="false" items="{
-								path: '/poheader'
+								path: ''
 									}" selectionChange="porowchange">
 																<columns>
 																	<Column width="200px">
@@ -156,6 +156,9 @@
 																	</Column>
 																	<Column demandPopin="true">
 																		<Text text="Vendor Code" />
+																	</Column>
+																	<Column demandPopin="true">
+																		<Text text="Type" />
 																	</Column>
 																	<Column demandPopin="true">
 																		<Text text="Amount" />
@@ -166,6 +169,7 @@
 																		<cells>
 																			<Text text="{pono}"></Text>
 																			<Text text="{vendor}"></Text>
+																			<Text text="{type}"></Text>
 																			<Text text="{amount}"></Text>
 																		</cells>
 																	</ColumnListItem>

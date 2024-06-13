@@ -453,6 +453,11 @@ module.exports = async function () {
             let vend = await SELECT.from(vendor).where({ panno: pannum });
             return JSON.stringify(vend)
         }
+        if (call == 'getpo') {
+            var pono = result.pono;
+            let po = await SELECT.from(poheader).where({ pono: pono });
+            return JSON.stringify(po)
+        }
         if (call === 'patchattach') {
             try {
                 var uid = result.uid;
