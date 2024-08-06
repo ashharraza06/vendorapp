@@ -51,7 +51,7 @@ modules:
           ServiceInstanceName: vendorapp-xsuaa-service
           ServiceKeyName: uaa_vendorapp-key
           sap.cloud.service: vendorapplication
-        existing_destinations_policy: ignore
+        existing_destinations_policy: update
   build-parameters:
     no-source: true
 - name: vendorapp-app-content

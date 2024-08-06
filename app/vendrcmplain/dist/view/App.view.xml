@@ -290,7 +290,7 @@
 																<Label id="selcomvw" text="Complain No:"/>
 																<Text id="comp_valvw" class="vencode" text="1711530148386-360672" />
 															</VBox>
-															<VBox id="panvw" width="30%">
+															<VBox id="panvw" visible="false" width="30%">
 																<Label id="selpanvw" text="Pan Number:"/>
 																<Text id="pan_valvw" class="vencode" text="PAN123" />
 															</VBox>

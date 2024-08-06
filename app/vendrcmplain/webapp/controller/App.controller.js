@@ -26,7 +26,7 @@ sap.ui.define([
     return Controller.extend("vendrcmplain.controller.App", {
       onInit: async function (oEvent) {
         debugger
-
+        this.byId("step2").setVisible(false);
         let functionname = 'submitcomplaints';
         let oFunction = this.getView().getModel().bindContext(`/${functionname}(...)`);
         var testdata = JSON.stringify({
@@ -45,20 +45,30 @@ sap.ui.define([
 
         debugger
         this.byId("screen1").attachBrowserEvent("click", function (oEvent) {
-          porowchange(oEvent);
+          debugger
+          var potable = sap.ui.getCore().byId("polist::poheaderList--fe::table::poheader::LineItem-innerTable");
+          potable.attachSelectionChange(function (oEvent) {
+            debugger
+            var selection = sap.ui.getCore().byId("polist::poheaderList--fe::table::poheader::LineItem-innerTable")._aSelectedPaths[0];
+            var progress =  sap.ui.getCore().byId("application-vednorinfor-Display-component---App--VendorComplain-progressNavigator").getProgress();
+            if (selection !== null && typeof selection !== 'undefined') {
+              if (progress !== 2 && progress !== 3) {
+              sap.ui.getCore().byId("application-vednorinfor-Display-component---App--step2").setVisible(true)
+            }
+          }
+          });
         });
         // this._handleNavigationToStep(1);
-        var ocustomerDetailContainer = this.getOwnerComponent().createComponent({
+        var opolistContainer = this.getOwnerComponent().createComponent({
           usage: "screen1", async: true, manifest: true
         });
-        ocustomerDetailContainer.then(
-          function (ocustomerDetail) {
+        opolistContainer.then(
+          function (opolist) {
             debugger
-            this.byId("screen1").setComponent(ocustomerDetail);
-            this._customerDetailContainer = ocustomerDetail;
+            this.byId("screen1").setComponent(opolist);
+            this._polistContainer = opolist;
           }.bind(this)
         );
-
         // //this.byId("PanStep").setNextStep(this.getView().byId("PoStep"));
         this._wizard = this.byId("VendorComplain");
         this._oNavContainer = this.byId("wizardNavContainer");
@@ -66,11 +76,11 @@ sap.ui.define([
         oEvent.oSource.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[1].setVisible(false);
 
 
-
       },
       b: function (oEvent) {
         debugger
       },
+
       // //StepOne: function (oEvent) {
       // // debugger;
       //   oEvent.oSource.oParent.oParent.oParent.oParent.oParent.mAggregations.rootControl.mAggregations.content[0].mAggregations.pages[0].mAggregations.footer.mAggregations.content[1].setVisible(false);

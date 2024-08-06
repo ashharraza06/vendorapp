@@ -1,4 +1,4 @@
-const { insert } = require('@sap/cds/libx/_runtime/hana/execute');
+// const { insert } = require('@sap/cds/libx/_runtime/hana/execute');
 const axios = require('axios');
 module.exports = async function () {
     // debugger;
@@ -17,8 +17,8 @@ module.exports = async function () {
 
     this.before('READ', 'poheader', async req => {
         debugger
-        var clientno = 'sb-8f1193d5-6003-4680-a1f4-e4374c0983cb!b283726|it-rt-42214e98trial!b55215';
-        var secretno = 'c920c5ae-2657-4739-802f-26e40fdcd750$kiWumeZOnrLKGJ7vbjToTL0bMdFkUgup3lPaZtOYwCU=';
+        var clientno = 'sb-1a02d87c-1406-44ca-8abb-2c8c85049d33!b283732|it-rt-d0fab995trial!b55215';
+        var secretno = 'a9ad9760-c39a-41b2-adff-8aa1e8dbf2fc$MpvzZJXyyZeLsxTRrOxeer2A6mvhHK-l0NqO3mvFpW8=';
         var authno = Buffer.from(clientno + ':' + secretno, 'utf-8').toString('base64');
         // var auth = 'MmNjNzI1NGUtY2IzMi00MTU5LWFiNjUtY2U4YTQwODBhY2RkOk5lMk0yYm1EY3BzY3ZsS205TmU5TXRFbms5d3JzckJh';
         // var response = await axios.request('https://api.ariba.com/v2/oauth/token?grant_type=openapi_2lo',
@@ -45,7 +45,7 @@ module.exports = async function () {
         var poquery = 'type=org&apikey=PVUWHfvxeoXJ700gjyDAho2fc4Fm7ZxJ&$filter=(supplierANID eq AN11180858077-T)';
         var pobasicval = 'Basic MmNjNzI1NGUtY2IzMi00MTU5LWFiNjUtY2U4YTQwODBhY2RkOk5lMk0yYm1EY3BzY3ZsS205TmU5TXRFbms5d3JzckJh';
         var pobuyerid = 'AN11180267057-T'
-        var apicall = await axios.request('https://42214e98trial.it-cpitrial06-rt.cfapps.us10-001.hana.ondemand.com/http/call',
+        var apicall = await axios.request('https://d0fab995trial.it-cpitrial06-rt.cfapps.us10-001.hana.ondemand.com/http/call',
         {
             method: 'GET',
             headers: {
@@ -117,7 +117,7 @@ module.exports = async function () {
         var apiquery = 'apikey=9ASfZv1r7gPXjszTxSgvNe8hi77OW00Y';
         var basicval = 'Basic MDA2Yzg5Y2ItNGM4Ny00NjMyLThiOGMtMzJjOTI2OTg4YWZiOmh5Q2pieWdkQ3dzWlVLclhoTG1OV3psdmVBRVlDV2tL';
         var buyerid = 'AN11180267057-T'
-        var apicallinv = await axios.request('https://42214e98trial.it-cpitrial06-rt.cfapps.us10-001.hana.ondemand.com/http/call',
+        var apicallinv = await axios.request('https://d0fab995trial.it-cpitrial06-rt.cfapps.us10-001.hana.ondemand.com/http/call',
         {
             method: 'GET',
             headers: {

@@ -13,6 +13,8 @@ sap.ui.define(['sap/ui/core/mvc/ControllerExtension', 'sap/ushell/services/UserI
 			 * @memberOf polist.ext.controller.Iistcontroller
 			 */
 			onInit: function () {
+				debugger;
+
 				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
 				var oModel = this.base.getExtensionAPI().getModel();
 				debugger;
@@ -33,13 +35,12 @@ sap.ui.define(['sap/ui/core/mvc/ControllerExtension', 'sap/ushell/services/UserI
 					let functionname = 'submitcomplaints';
 					let oFunction = this.getView().getModel().bindContext(`/${functionname}(...)`);
 					var testdata = JSON.stringify({
-						panno : panno 
-					  });
+						panno: panno
+					});
 					oFunction.setParameter('data', testdata);
 					oFunction.setParameter('status', JSON.stringify({ status: 'getvendor' }));
 					await oFunction.execute();
 					debugger
-
 					let context = oFunction.getBoundContext();
 					let getdata = context.getValue();
 					let result = getdata.value;

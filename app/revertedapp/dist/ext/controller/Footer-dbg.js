@@ -23,6 +23,8 @@ sap.ui.define([
             let oFunction = this._view.getModel().bindContext(`/${functionname}(...)`);
             oFunction.setParameter('data', testdata);
             oFunction.setParameter('status', JSON.stringify({ status: 'postComment' }));
+            let functionname1 = 'triggerProcess';
+            let oFunction1 = this._view.getModel().bindContext(`/${functionname1}(...)`);
 
             var oDialog = new sap.m.Dialog({
                 title: "Submit",
@@ -38,26 +40,27 @@ sap.ui.define([
                             debugger
                             await oFunction.execute();
                             var status = "Submitted";
-                            let functionname1 = 'triggerProcess';
-                            let oFunction1 = this.oView.getModel().bindContext(`/${functionname1}(...)`);
+
                             let revtestdata = JSON.stringify({ complainno: compno, cstatus: status });
                             oFunction.setParameter('data', revtestdata);
                             oFunction.setParameter('status', JSON.stringify({ status: 'revsubmitted' }))
                             await oFunction.execute();
-                            sap.m.MessageToast.show("Complain No " + compno + " sent for re-approval");
-                            oDialog.close();
-                            window.history.back();
-                            // Reloading the previous page after a delay to ensure it loads after navigating back
-                            setTimeout(function () {
-                                location.reload();
-                            }, 1000);
                             var testdata1 = JSON.stringify({
                                 complainno: compno,
                                 ccomplain_about: comp_type,
-                              });
+                            });
                             oFunction1.setParameter('data', testdata1);
                             oFunction1.setParameter('status', JSON.stringify({ status: '' }));
                             await oFunction1.execute();
+                            sap.m.MessageToast.show("Complain No " + compno + " sent for re-approval");
+                            oDialog.close();
+                            window.history.back();
+
+                            // Reloading the previous page after a delay to ensure it loads after navigating back
+                            // setTimeout(function () {
+                            //     // location.reload();
+                            // }, 1000);
+                           
                         }
                     }),
                     new sap.m.Button({
